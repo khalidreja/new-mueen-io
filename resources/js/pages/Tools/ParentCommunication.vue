@@ -2,27 +2,27 @@
     <Head title="التواصل مع أولياء الأمور - منصة مُعين" />
 
     <ArabicDashboardLayout>
-        <div class="min-h-screen bg-gray-50 overflow-auto" dir="rtl">
+        <div class="min-h-screen bg-gray-50 dark:bg-gray-900 overflow-auto" dir="rtl">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <!-- Header -->
                 <div class="flex items-center justify-between mb-8">
                     <div>
-                        <h2 class="text-3xl font-bold text-gray-800 flex items-center">
+                        <h2 class="text-3xl font-bold text-gray-800 dark:text-gray-200 flex items-center">
                             <span class="text-4xl ml-3">👨‍👩‍👧‍👦</span>
                             التواصل مع أولياء الأمور
                         </h2>
-                        <p class="text-gray-600 mt-1">
+                        <p class="text-gray-600 dark:text-gray-400 mt-1">
                             أنشئ رسائل احترافية ومؤثرة للتواصل مع أولياء الأمور
                         </p>
                     </div>
                 </div>
 
                 <!-- Main Content -->
-                <div class="bg-white rounded-xl shadow-sm p-6">
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
                     <form @submit.prevent="generateMessage" class="space-y-6">
                         <!-- Message Type -->
                         <div>
-                            <label for="messageType" class="block text-sm font-medium text-gray-700 mb-2">
+                            <label for="messageType" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 نوع الرسالة
                             </label>
                             <select
@@ -45,8 +45,8 @@
                         </div>
 
                         <!-- Student Selection -->
-                        <div class="bg-blue-50 rounded-lg p-6 border border-blue-200">
-                            <h3 class="text-lg font-medium text-gray-800 mb-4 flex items-center">
+                        <div class="bg-blue-50 dark:bg-blue-900 rounded-lg p-6 border border-blue-200 dark:border-blue-700">
+                            <h3 class="text-lg font-medium text-gray-800 dark:text-gray-200 mb-4 flex items-center">
                                 <span class="ml-2">👤</span>
                                 معلومات الطالب
                             </h3>
@@ -59,28 +59,28 @@
 
                         <!-- Parent Information -->
                         <div>
-                            <label for="parentName" class="block text-sm font-medium text-gray-700 mb-2">
+                            <label for="parentName" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 اسم ولي الأمر
                             </label>
                             <input
                                 id="parentName"
                                 v-model="form.parentName"
                                 type="text"
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                                 placeholder="أدخل اسم ولي الأمر"
                             />
                         </div>
 
                         <!-- Message Details -->
                         <div>
-                            <label for="messageDetails" class="block text-sm font-medium text-gray-700 mb-2">
+                            <label for="messageDetails" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 تفاصيل الرسالة
                             </label>
                             <textarea
                                 id="messageDetails"
                                 v-model="form.messageDetails"
                                 rows="5"
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                                 placeholder="اكتب التفاصيل المحددة التي تريد تضمينها في الرسالة..."
                                 required
                             ></textarea>
@@ -88,7 +88,7 @@
 
                         <!-- Tone -->
                         <div>
-                            <label for="tone" class="block text-sm font-medium text-gray-700 mb-2">
+                            <label for="tone" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 نبرة الرسالة
                             </label>
                             <select
@@ -123,27 +123,27 @@
                     </form>
 
                     <!-- Generated Content -->
-                    <div v-if="generatedContent" class="mt-8 border-t pt-8">
+                    <div v-if="generatedContent" class="mt-8 border-t border-gray-200 dark:border-gray-600 pt-8">
                         <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-xl font-bold text-gray-800">الرسالة المولدة</h3>
+                            <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200">الرسالة المولدة</h3>
                             <div class="flex space-x-2 space-x-reverse">
                                 <button
                                     @click="copyToClipboard"
-                                    class="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors flex items-center text-sm"
+                                    class="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors flex items-center text-sm"
                                 >
                                     <span class="ml-2">📋</span>
                                     نسخ
                                 </button>
                                 <button
                                     @click="saveContent"
-                                    class="bg-green-100 text-green-700 px-4 py-2 rounded-lg hover:bg-green-200 transition-colors flex items-center text-sm"
+                                    class="bg-green-100 dark:bg-green-800 text-green-700 dark:text-green-300 px-4 py-2 rounded-lg hover:bg-green-200 dark:hover:bg-green-700 transition-colors flex items-center text-sm"
                                 >
                                     <span class="ml-2">💾</span>
                                     حفظ
                                 </button>
                             </div>
                         </div>
-                        <div class="bg-gray-50 rounded-lg p-6 prose prose-lg max-w-none">
+                        <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-6 prose prose-lg max-w-none dark:prose-invert">
                             <div v-html="formattedContent"></div>
                         </div>
                     </div>
@@ -192,9 +192,37 @@ const onStudentSelected = (studentName, classData, subjects) => {
 }
 
 const generateMessage = async () => {
+    // التحقق من البيانات المطلوبة
+    if (!form.value.studentName) {
+        alert('يرجى اختيار طالب');
+        return;
+    }
+    if (!form.value.messageType) {
+        alert('يرجى اختيار نوع الرسالة');
+        return;
+    }
+    if (!form.value.messageDetails) {
+        alert('يرجى كتابة تفاصيل الرسالة');
+        return;
+    }
+    
     loading.value = true
     try {
         const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+        
+        // تحويل البيانات للتنسيق المطلوب من Backend
+        const requestData = {
+            student_name: form.value.studentName,
+            message_type: form.value.messageType,
+            subject: form.value.subject || 'عام',
+            details: form.value.messageDetails,
+            parent_name: form.value.parentName,
+            grade: form.value.grade,
+            tone: form.value.tone
+        };
+        
+        console.log('Sending data:', requestData);
+        
         const response = await fetch('/ai/generate-parent-message', {
             method: 'POST',
             headers: {
@@ -202,7 +230,7 @@ const generateMessage = async () => {
                 'Accept': 'application/json',
                 'X-CSRF-TOKEN': csrfToken
             },
-            body: JSON.stringify(form.value)
+            body: JSON.stringify(requestData)
         })
         
         if (!response.ok) {
@@ -236,22 +264,43 @@ const copyToClipboard = async () => {
 
 const saveContent = async () => {
     try {
-        await router.post('/ai/save-content', {
-            type: 'parent_communication',
-            title: `رسالة لولي أمر ${form.value.studentName} - ${form.value.messageType}`,
-            content: generatedContent.value,
-            metadata: {
-                student_name: form.value.studentName,
-                parent_name: form.value.parentName,
-                message_type: form.value.messageType,
-                grade: form.value.grade,
-                subject: form.value.subject
-            }
-        })
-        alert('تم حفظ المحتوى بنجاح!')
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+        
+        const response = await fetch('/ai/save-content', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            },
+            body: JSON.stringify({
+                type: 'parent_communication',
+                title: `رسالة لولي أمر ${form.value.studentName} - ${form.value.messageType}`,
+                content: generatedContent.value,
+                metadata: {
+                    student_name: form.value.studentName,
+                    parent_name: form.value.parentName,
+                    message_type: form.value.messageType,
+                    grade: form.value.grade,
+                    subject: form.value.subject
+                }
+            })
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            alert('تم حفظ المحتوى بنجاح!')
+        } else {
+            throw new Error(data.message || 'فشل في حفظ المحتوى');
+        }
     } catch (error) {
         console.error('Error saving content:', error)
-        alert('فشل في حفظ المحتوى')
+        alert('فشل في حفظ المحتوى. يرجى المحاولة مرة أخرى.')
     }
 }
 </script>

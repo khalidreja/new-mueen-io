@@ -286,14 +286,29 @@ class GeminiService
 
     private function buildObjectivesPrompt(array $data): string
     {
+        $objectivesCount = $data['objectivesCount'] ?? '4';
+        $bloomLevels = $data['bloomLevels'] ?? 'mixed';
+        
+        $bloomLevelText = match($bloomLevels) {
+            'remember' => 'مع التركيز على مستوى التذكر من تصنيف بلوم',
+            'understand' => 'مع التركيز على مستوى الفهم من تصنيف بلوم',
+            'apply' => 'مع التركيز على مستوى التطبيق من تصنيف بلوم',
+            'analyze' => 'مع التركيز على مستوى التحليل من تصنيف بلوم',
+            'evaluate' => 'مع التركيز على مستوى التقييم من تصنيف بلوم',
+            'create' => 'مع التركيز على مستوى الإبداع من تصنيف بلوم',
+            default => 'مع تنويع مستويات بلوم المعرفية'
+        };
+        
         return "أنت خبير في المناهج والأهداف التعليمية. مهمتك إنشاء أهداف تعليمية واضحة ومحددة وقابلة للقياس باللغة العربية.
 
 المعلومات المقدمة:
 - المادة: {$data['subject']}
 - الصف: {$data['grade']}
 - الموضوع: {$data['topic']}
+- عدد الأهداف المطلوبة: {$objectivesCount}
+- مستويات بلوم: {$bloomLevelText}
 
-يرجى إنشاء مجموعة أهداف تعليمية شاملة مقسمة إلى:
+يرجى إنشاء {$objectivesCount} أهداف تعليمية {$bloomLevelText} مقسمة إلى:
 
 ## الأهداف المعرفية (Cognitive Objectives)
 يجب أن يكون الطالب قادراً على:
@@ -327,14 +342,17 @@ class GeminiService
 
     private function buildQuizPrompt(array $data): string
     {
+        $numQuestions = $data['num_questions'] ?? 5;
+        $questionTypes = $data['question_types'] ?? ['mcq'];
+        $questionTypesText = implode('، ', $questionTypes);
+        
         return "أنت خبير في إعداد الاختبارات التعليمية. مهمتك إنشاء اختبار شامل ومتنوع باللغة العربية.
 
 المعلومات المقدمة:
-- المادة: {$data['subject']}
 - الصف: {$data['grade']}
 - الموضوع: {$data['topic']}
-- عدد الأسئلة المطلوب: {$data['questions_count']}
-- نوع الاختبار: {$data['quiz_type']}
+- عدد الأسئلة المطلوب: {$numQuestions}
+- أنواع الأسئلة: {$questionTypesText}
 
 يرجى إنشاء اختبار يحتوي على:
 
@@ -504,13 +522,21 @@ class GeminiService
 
     private function buildRubricPrompt(array $data): string
     {
+        $taskType = isset($data['assignment']) && !empty($data['assignment']) 
+            ? $data['assignment'] 
+            : (isset($data['task_type']) ? $data['task_type'] : 'مهمة تعليمية');
+        
+        $levels = isset($data['levels']) && is_numeric($data['levels']) 
+            ? intval($data['levels']) 
+            : 4;
+            
         return "أنت خبير في التقييم التربوي ووضع معايير التقييم. مهمتك إنشاء rubric (معيار تقييم) مفصل وواضح باللغة العربية.
 
 المعلومات المقدمة:
 - المادة: {$data['subject']}
-- نوع المهمة: {$data['task_type']}
+- نوع المهمة: {$taskType}
 - الصف: {$data['grade']}
-- عدد المستويات: {$data['levels']} (ممتاز، جيد جداً، جيد، مقبول)
+- عدد المستويات: {$levels} (ممتاز، جيد جداً، جيد، مقبول)
 
 يرجى إنشاء معيار تقييم يحتوي على:
 
@@ -577,13 +603,21 @@ class GeminiService
 
     private function buildStoryPrompt(array $data): string
     {
+        $ageGroup = isset($data['age_group']) && !empty($data['age_group']) 
+            ? $data['age_group'] 
+            : $data['grade'];
+            
+        $storyLength = isset($data['story_length']) && !empty($data['story_length']) 
+            ? $data['story_length'] 
+            : 'متوسطة (500-800 كلمة)';
+            
         return "أنت مؤلف قصص تعليمية للأطفال. مهمتك إنشاء قصة تعليمية ممتعة ومفيدة باللغة العربية.
 
 المعلومات المقدمة:
 - المادة: {$data['subject']}
 - الموضوع التعليمي: {$data['topic']}
-- الفئة العمرية: {$data['age_group']}
-- طول القصة: {$data['story_length']}
+- الصف الدراسي: {$ageGroup}
+- طول القصة: {$storyLength}
 
 يرجى كتابة قصة تحتوي على:
 
@@ -639,12 +673,22 @@ class GeminiService
 
     private function buildConceptPrompt(array $data): string
     {
+        $methods = isset($data['simplificationMethods']) && is_array($data['simplificationMethods']) 
+            ? implode(', ', $data['simplificationMethods']) 
+            : 'جميع الطرق المتاحة';
+            
+        $context = isset($data['additionalContext']) && !empty($data['additionalContext'])
+            ? "\n- السياق الإضافي: {$data['additionalContext']}"
+            : '';
+        
         return "أنت خبير في التعليم وتبسيط المفاهيم المعقدة. مهمتك تبسيط مفهوم أو موضوع معقد باللغة العربية.
 
 المعلومات المقدمة:
-- المفهوم المراد تبسيطه: {$data['concept']}
-- الفئة المستهدفة: {$data['target_audience']}
-- مستوى التعقيد المطلوب: {$data['complexity_level']}
+- المفهوم المراد تبسيطه: {$data['complexConcept']}
+- المادة الدراسية: {$data['subject']}
+- الصف الدراسي: {$data['grade']}
+- مستوى الجمهور المستهدف: {$data['audienceLevel']}
+- طرق التبسيط المطلوبة: {$methods}{$context}
 
 يرجى تبسيط المفهوم من خلال:
 
@@ -711,13 +755,17 @@ class GeminiService
 
     private function buildStrategyPrompt(array $data): string
     {
+        $challenge = isset($data['challenge']) && !empty($data['challenge']) 
+            ? $data['challenge'] 
+            : 'تحسين فهم الطلاب وزيادة مشاركتهم في الدرس';
+            
         return "أنت خبير في استراتيجيات التدريس والتعلم النشط. مهمتك اقتراح استراتيجيات تدريس فعالة ومبتكرة باللغة العربية.
 
 المعلومات المقدمة:
 - المادة: {$data['subject']}
 - الموضوع: {$data['topic']}
 - الصف: {$data['grade']}
-- التحدي التعليمي: {$data['challenge']}
+- التحدي التعليمي: {$challenge}
 
 يرجى اقتراح استراتيجيات تدريس متنوعة:
 

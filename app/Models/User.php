@@ -24,6 +24,11 @@ class User extends Authenticatable
         'email',
         'password',
         'email_verified_at',
+        'role',
+        'status',
+        'subscription_type',
+        'subscription_updated_at',
+        'is_active',
     ];
 
     /**
@@ -55,5 +60,37 @@ class User extends Authenticatable
     public function teacher(): HasOne
     {
         return $this->hasOne(Teacher::class);
+    }
+
+    /**
+     * Check if the user is an admin.
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    /**
+     * Check if the user is a teacher.
+     */
+    public function isTeacher(): bool
+    {
+        return $this->role === 'teacher';
+    }
+
+    /**
+     * Get the user's subscription type.
+     */
+    public function getSubscriptionType(): string
+    {
+        return $this->subscription_type ?? 'free';
+    }
+
+    /**
+     * Check if the user has a premium subscription.
+     */
+    public function hasPremiumSubscription(): bool
+    {
+        return in_array($this->subscription_type, ['premium', 'pro']);
     }
 }

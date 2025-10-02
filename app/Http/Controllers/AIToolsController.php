@@ -50,7 +50,9 @@ class AIToolsController extends Controller
         $request->validate([
             'subject' => 'required|string',
             'grade' => 'required|string',
-            'lesson_topic' => 'required|string',
+            'topic' => 'required|string',
+            'objectivesCount' => 'nullable|string',
+            'bloomLevels' => 'nullable|string',
         ]);
 
         try {
@@ -76,10 +78,10 @@ class AIToolsController extends Controller
     public function generateQuiz(Request $request)
     {
         $request->validate([
-            'subject' => 'required|string',
             'topic' => 'required|string',
             'grade' => 'required|string',
-            'questions_count' => 'required|integer|min:5|max:20',
+            'num_questions' => 'nullable|integer|min:3|max:20',
+            'question_types' => 'nullable|array',
         ]);
 
         try {
@@ -108,7 +110,7 @@ class AIToolsController extends Controller
             'subject' => 'required|string',
             'topic' => 'required|string',
             'grade' => 'required|string',
-            'activity_type' => 'required|string',
+            'activity_type' => 'nullable|string',
         ]);
 
         try {
@@ -136,8 +138,11 @@ class AIToolsController extends Controller
         $request->validate([
             'student_name' => 'required|string',
             'message_type' => 'required|string',
-            'subject' => 'required|string',
+            'subject' => 'nullable|string',
             'details' => 'required|string',
+            'parent_name' => 'nullable|string',
+            'grade' => 'nullable|string',
+            'tone' => 'nullable|string',
         ]);
 
         try {
@@ -164,9 +169,10 @@ class AIToolsController extends Controller
     {
         $request->validate([
             'subject' => 'required|string',
-            'task_type' => 'required|string',
+            'assignment' => 'required|string',
             'grade' => 'required|string',
-            'levels' => 'required|integer|min:3|max:5',
+            'task_type' => 'nullable|string',
+            'levels' => 'nullable|integer|min:3|max:5',
         ]);
 
         try {
@@ -194,8 +200,9 @@ class AIToolsController extends Controller
         $request->validate([
             'subject' => 'required|string',
             'topic' => 'required|string',
-            'age_group' => 'required|string',
-            'story_length' => 'required|string',
+            'grade' => 'required|string',
+            'age_group' => 'nullable|string',
+            'story_length' => 'nullable|string',
         ]);
 
         try {
@@ -221,10 +228,12 @@ class AIToolsController extends Controller
     public function generateConceptSimplification(Request $request)
     {
         $request->validate([
-            'concept' => 'required|string',
+            'complexConcept' => 'required|string',
             'subject' => 'required|string',
             'grade' => 'required|string',
-            'simplification_level' => 'required|string',
+            'audienceLevel' => 'required|string',
+            'simplificationMethods' => 'nullable|array',
+            'additionalContext' => 'nullable|string',
         ]);
 
         try {
@@ -252,7 +261,7 @@ class AIToolsController extends Controller
         $request->validate([
             'subject' => 'required|string',
             'topic' => 'required|string',
-            'strategy_type' => 'required|string',
+            'strategy_type' => 'nullable|string',
             'grade' => 'required|string',
         ]);
 
@@ -361,13 +370,27 @@ class AIToolsController extends Controller
 
             // البحث عن Teacher المربوط بالمستخدم الحالي
             $user = auth()->user();
-            $teacher = $user->teacher;
             
-            if (!$teacher) {
+            if (!$user) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'لم يتم العثور على بيانات المعلم.'
-                ], 404);
+                    'message' => 'يجب تسجيل الدخول أولاً.'
+                ], 401);
+            }
+            
+            $teacher = $user->teacher;
+            
+            // إذا لم يكن هناك teacher، إنشاء واحد جديد
+            if (!$teacher) {
+                $teacher = \App\Models\Teacher::create([
+                    'user_id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'phone' => null,
+                    'subject' => null,
+                    'bio' => null,
+                    'avatar' => null,
+                ]);
             }
 
             $generatedContent = GeneratedContent::create([

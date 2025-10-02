@@ -2,36 +2,36 @@
     <Head title="مولد معايير التقييم - منصة مُعين" />
 
     <ArabicDashboardLayout>
-        <div class="min-h-screen bg-gray-50 overflow-auto" dir="rtl">
+        <div class="min-h-screen bg-gray-50 dark:bg-gray-900 overflow-auto" dir="rtl">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div class="flex items-center justify-between mb-8">
                     <div>
-                        <h2 class="text-3xl font-bold text-gray-800 flex items-center">
+                        <h2 class="text-3xl font-bold text-gray-800 dark:text-gray-200 flex items-center">
                             <span class="text-4xl ml-3">⚖️</span>
                             مولد معايير التقييم
                         </h2>
-                        <p class="text-gray-600 mt-1">
+                        <p class="text-gray-600 dark:text-gray-400 mt-1">
                             أنشئ معايير تقييم (Rubrics) مفصلة للمشاريع والواجبات
                         </p>
                     </div>
                 </div>
 
-                <div class="bg-white rounded-xl shadow-sm p-6">
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
                     <form @submit.prevent="generateRubric" class="space-y-6">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label for="subject" class="block text-sm font-medium text-gray-700 mb-2">المادة الدراسية</label>
-                                <input id="subject" v-model="form.subject" type="text" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="مثل: الرياضيات، العلوم" required />
+                                <label for="subject" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">المادة الدراسية</label>
+                                <input id="subject" v-model="form.subject" type="text" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="مثل: الرياضيات، العلوم" required />
                             </div>
                             <div>
-                                <label for="grade" class="block text-sm font-medium text-gray-700 mb-2">الصف الدراسي</label>
-                                <input id="grade" v-model="form.grade" type="text" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="مثل: الصف الثالث المتوسط" required />
+                                <label for="grade" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">الصف الدراسي</label>
+                                <input id="grade" v-model="form.grade" type="text" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="مثل: الصف الثالث المتوسط" required />
                             </div>
                         </div>
 
                         <div>
-                            <label for="assignment" class="block text-sm font-medium text-gray-700 mb-2">نوع المهمة أو المشروع</label>
-                            <input id="assignment" v-model="form.assignment" type="text" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="مثل: مشروع علمي، تقرير بحثي، عرض تقديمي" required />
+                            <label for="assignment" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">نوع المهمة أو المشروع</label>
+                            <input id="assignment" v-model="form.assignment" type="text" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="مثل: مشروع علمي، تقرير بحثي، عرض تقديمي" required />
                         </div>
 
                         <div class="flex justify-center">
@@ -55,7 +55,7 @@
                                 نسخ
                             </button>
                         </div>
-                        <div class="bg-gray-50 rounded-lg p-6 prose prose-lg max-w-none">
+                        <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-6 prose prose-lg max-w-none">
                             <div v-html="formattedContent"></div>
                         </div>
                     </div>
@@ -101,7 +101,7 @@ const generateRubric = async () => {
         if (data.success) {
             generatedContent.value = data.content;
         } else {
-            throw new Error(data.error || 'خطأ غير معروف');
+            throw new Error(data.error || data.message || 'حدث خطأ أثناء توليد معايير التقييم');
         }
     } catch (error) {
         console.error('Error generating rubric:', error)

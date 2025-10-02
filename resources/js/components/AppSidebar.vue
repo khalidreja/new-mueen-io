@@ -13,9 +13,12 @@ import {
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
 import { type NavItem } from '@/types';
-import { Link } from '@inertiajs/vue3';
-import { BookOpen, Folder, LayoutGrid } from 'lucide-vue-next';
+import { Link, usePage } from '@inertiajs/vue3';
+import { BookOpen, Folder, LayoutGrid, Settings } from 'lucide-vue-next';
+import { computed } from 'vue';
 import AppLogo from './AppLogo.vue';
+
+const page = usePage();
 
 const mainNavItems: NavItem[] = [
     {
@@ -24,6 +27,21 @@ const mainNavItems: NavItem[] = [
         icon: LayoutGrid,
     },
 ];
+
+// Add admin panel link if user is admin
+const adminNavItems = computed<NavItem[]>(() => {
+    const user = page.props.auth?.user as any;
+    if (user?.role === 'admin') {
+        return [
+            {
+                title: 'لوحة الإدارة',
+                href: '/admin/dashboard',
+                icon: Settings,
+            },
+        ];
+    }
+    return [];
+});
 
 const footerNavItems: NavItem[] = [
     {
@@ -55,6 +73,7 @@ const footerNavItems: NavItem[] = [
 
         <SidebarContent>
             <NavMain :items="mainNavItems" />
+            <NavMain v-if="adminNavItems.length > 0" :items="adminNavItems" />
         </SidebarContent>
 
         <SidebarFooter>

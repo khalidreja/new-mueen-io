@@ -11,68 +11,103 @@ class ProfileController extends Controller
 {
     public function edit()
     {
-        $user = auth()->user();
-        $teacher = $user->teacher ?: $user->teacher()->create([]);
-        
-        // تحضير بيانات المستخدم مع معلومات إضافية من teacher
-        $userData = $user->toArray();
-        $userData['phone'] = $teacher->phone;
-        $userData['city'] = $teacher->city;
-        $userData['school'] = $teacher->school;
-        $userData['subject'] = $teacher->subject;
-        $userData['stage'] = $teacher->stage;
-        $userData['years_experience'] = $teacher->years_experience;
-        $userData['qualification'] = $teacher->qualification;
-        $userData['specialization'] = $teacher->specialization;
-        
-        return Inertia::render('Profile/Edit', [
-            'user' => $userData,
-            'teacher' => $teacher,
-            'teacherClasses' => is_array($teacher->classes_data) ? $teacher->classes_data : [],
-        ]);
+        try {
+            $user = auth()->user();
+            $teacher = $user->teacher ?: $user->teacher()->create([]);
+            
+            // تحضير بيانات المستخدم مع معلومات إضافية من teacher
+            $userData = $user->toArray();
+            $userData['phone'] = $teacher->phone;
+            $userData['city'] = $teacher->city;
+            $userData['school'] = $teacher->school;
+            $userData['subject'] = $teacher->subject;
+            $userData['stage'] = $teacher->stage;
+            $userData['years_experience'] = $teacher->years_experience;
+            $userData['qualification'] = $teacher->qualification;
+            $userData['specialization'] = $teacher->specialization;
+            
+            // التأكد من صحة بيانات الفصول
+            $classesData = $teacher->classes_data;
+            if (!is_array($classesData)) {
+                $classesData = [];
+            }
+            
+            return Inertia::render('Profile/Edit', [
+                'user' => $userData,
+                'teacher' => $teacher->toArray(),
+                'teacherClasses' => $classesData,
+            ]);
+            
+        } catch (\Exception $e) {
+            \Log::error('Profile edit page failed: ' . $e->getMessage());
+            
+            return Inertia::render('Profile/Edit', [
+                'user' => auth()->user()->toArray(),
+                'teacher' => [],
+                'teacherClasses' => [],
+                'error' => 'حدث خطأ في تحميل البيانات'
+            ]);
+        }
     }
 
     public function update(Request $request)
     {
-        $user = auth()->user();
-        $teacher = $user->teacher ?: $user->teacher()->create([]);
+        try {
+            $user = auth()->user();
+            $teacher = $user->teacher ?: $user->teacher()->create([]);
 
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'phone' => 'nullable|string|max:20',
-            'city' => 'nullable|string|max:100',
-            'school' => 'nullable|string|max:255',
-            'subject' => 'nullable|string|max:500',
-            'stage' => 'nullable|string|max:100',
-            'years_experience' => 'nullable|string|max:100',
-            'qualification' => 'nullable|string|max:100',
-            'specialization' => 'nullable|string|max:255',
-            'classes' => 'nullable|array',
-            'classes.*.id' => 'nullable',
-            'classes.*.stage' => 'nullable|string|max:100',
-            'classes.*.grade' => 'nullable|string|max:100',
-            'classes.*.className' => 'nullable|string|max:100',
-            'classes.*.subjects' => 'nullable|array',
-            'classes.*.students' => 'nullable|array',
-        ]);
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'phone' => 'nullable|string|max:20',
+                'city' => 'nullable|string|max:100',
+                'school' => 'nullable|string|max:255',
+                'subject' => 'nullable|string|max:500',
+                'stage' => 'nullable|string|max:100',
+                'years_experience' => 'nullable|string|max:100',
+                'qualification' => 'nullable|string|max:100',
+                'specialization' => 'nullable|string|max:255',
+                'classes' => 'nullable|array',
+                'classes.*.id' => 'nullable',
+                'classes.*.stage' => 'nullable|string|max:100',
+                'classes.*.grade' => 'nullable|string|max:100',
+                'classes.*.className' => 'nullable|string|max:100',
+                'classes.*.subjects' => 'nullable|array',
+                'classes.*.students' => 'nullable|array',
+            ]);
 
-        $user->update([
-            'name' => $request->name,
-        ]);
+            // تحديث بيانات المستخدم
+            $user->update([
+                'name' => $validated['name'],
+            ]);
 
-        $teacher->update([
-            'phone' => $request->phone,
-            'city' => $request->city,
-            'school' => $request->school,
-            'subject' => $request->subject,
-            'stage' => $request->stage,
-            'years_experience' => $request->years_experience,
-            'qualification' => $request->qualification,
-            'specialization' => $request->specialization,
-            'classes_data' => $request->classes ?: [],
-        ]);
+            // تحديث بيانات المعلم
+            $teacher->update([
+                'phone' => $validated['phone'],
+                'city' => $validated['city'],
+                'school' => $validated['school'],
+                'subject' => $validated['subject'],
+                'stage' => $validated['stage'],
+                'years_experience' => $validated['years_experience'],
+                'qualification' => $validated['qualification'],
+                'specialization' => $validated['specialization'],
+                'classes_data' => $validated['classes'] ?: [],
+            ]);
 
-        return back()->with('success', 'تم تحديث الملف الشخصي بنجاح');
+            // تسجيل نجاح العملية
+            \Log::info('Profile updated successfully for user: ' . $user->id);
+
+            // إعادة تحميل البيانات بعد التحديث
+            $user->refresh();
+            $teacher->refresh();
+
+            return back()->with('success', 'تم تحديث الملف الشخصي بنجاح');
+
+        } catch (\Exception $e) {
+            // تسجيل الخطأ
+            \Log::error('Profile update failed: ' . $e->getMessage());
+            
+            return back()->withErrors(['error' => 'حدث خطأ أثناء تحديث الملف الشخصي: ' . $e->getMessage()]);
+        }
     }
 
     public function uploadImage(Request $request)

@@ -14,9 +14,46 @@ Route::get('/', function () {
         return redirect()->route('dashboard');
     }
     
-    // إذا لم يكن مسجل، عرض صفحة الهبوط
-    return Inertia::render('Landing');
+    // إذا لم يكن مسجل، عرض صفحة الترحيب المحدثة
+    return Inertia::render('Welcome');
 })->name('home');
+
+// Static Pages - متاحة للجميع
+Route::get('/about', function () {
+    return Inertia::render('About');
+})->name('about');
+
+Route::get('/features', function () {
+    return Inertia::render('Features');
+})->name('features');
+
+Route::get('/tutorials', function () {
+    return Inertia::render('Tutorials');
+})->name('tutorials');
+
+Route::get('/blog', function () {
+    return Inertia::render('Blog');
+})->name('blog');
+
+Route::get('/help', function () {
+    return Inertia::render('Help');
+})->name('help');
+
+Route::get('/contact', function () {
+    return Inertia::render('Contact');
+})->name('contact');
+
+Route::get('/privacy', function () {
+    return Inertia::render('Privacy');
+})->name('privacy');
+
+Route::get('/terms', function () {
+    return Inertia::render('Terms');
+})->name('terms');
+
+Route::get('/faq', function () {
+    return Inertia::render('FAQ');
+})->name('faq');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     // Dashboard - متاح فقط للأعضاء المسجلين
@@ -38,7 +75,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/generate-parent-message', [AIToolsController::class, 'generateParentMessage']);
         Route::post('/generate-rubric', [AIToolsController::class, 'generateRubric']);
         Route::post('/generate-story', [AIToolsController::class, 'generateStory']);
-        Route::post('/generate-concept', [AIToolsController::class, 'generateConceptSimplification']);
+        Route::post('/generate-concept-simplification', [AIToolsController::class, 'generateConceptSimplification']);
         Route::post('/generate-strategy', [AIToolsController::class, 'generateStrategy']);
         Route::post('/generate-performance-review', [AIToolsController::class, 'generatePerformanceReview']);
         Route::post('/generate-report-card', [AIToolsController::class, 'generateReportCard']);
@@ -53,6 +90,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/parent-communication', function () {
         return Inertia::render('Tools/ParentCommunication');
     })->name('parent-communication');
+    
+    Route::get('/lesson-plan-generator', function () {
+        return Inertia::render('Tools/LessonPlanGenerator');
+    })->name('lesson-plan-generator');
     
     Route::get('/objectives-generator', function () {
         return Inertia::render('Tools/ObjectivesGenerator');
@@ -104,6 +145,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/teacher-profile', [ProfileController::class, 'edit'])->name('teacher.profile.edit');
     Route::patch('/teacher-profile', [ProfileController::class, 'update'])->name('teacher.profile.update');
     Route::post('/teacher-profile/upload-image', [ProfileController::class, 'uploadImage'])->name('teacher.profile.upload-image');
+    
+    // Profile API test route (for debugging)
+    Route::post('/test-profile-update', [ProfileController::class, 'update'])->name('test.profile.update');
 });
 
 // require __DIR__.'/settings.php'; // معطل مؤقتاً لتجنب تضارب المسارات

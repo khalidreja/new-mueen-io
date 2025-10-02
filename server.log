@@ -1,8 +1,7 @@
 
-   INFO  Server running on [http://127.0.0.1:8080].  
+   INFO  Server running on [http://0.0.0.0:8000].  
 
   Press Ctrl+C to stop the server
 
-  2025-10-01 08:03:57 /api/ai-tools/generate/quiz ..................... ~ 0.26ms
-  2025-10-01 08:03:59 /api/ai-tools/generate/story .................. ~ 21 ثانية
-  Fatal error: Maximum execution time of 30+2 seconds exceeded (terminated) in /Users/khaledaljuhani/just-new/app/vendor/guzzlehttp/guzzle/src/Handler/CurlHandler.php on line 44
+  2025-10-02 15:28:10 ............................................................................................. ~ 500.36ms
+  2025-10-02 15:28:25 ............................................................................................. ~ 500.38ms

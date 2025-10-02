@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار لوحة الإدارة - منصة مُعين</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .rtl { direction: rtl; }
+    </style>
+</head>
+<body class="bg-gray-100 rtl">
+    <div class="min-h-screen flex items-center justify-center">
+        <div class="max-w-md mx-auto bg-white rounded-lg shadow-md p-6">
+            <h1 class="text-2xl font-bold text-center mb-6 text-gray-800">اختبار لوحة الإدارة</h1>
+            
+            <div class="space-y-4">
+                <div class="text-center">
+                    <h2 class="text-lg font-semibold mb-4">بيانات المستخدمين للاختبار:</h2>
+                </div>
+                
+                <!-- Admin User -->
+                <div class="border rounded-lg p-4 bg-red-50">
+                    <h3 class="font-semibold text-red-800">مدير النظام</h3>
+                    <p class="text-sm text-gray-600">البريد: admin@mueen.io</p>
+                    <p class="text-sm text-gray-600">كلمة المرور: admin123</p>
+                    <p class="text-xs text-red-600 mt-2">سيتمكن من الوصول إلى لوحة الإدارة</p>
+                </div>
+                
+                <!-- Teacher User -->
+                <div class="border rounded-lg p-4 bg-blue-50">
+                    <h3 class="font-semibold text-blue-800">معلم</h3>
+                    <p class="text-sm text-gray-600">البريد: teacher@mueen.io</p>
+                    <p class="text-sm text-gray-600">كلمة المرور: teacher123</p>
+                </div>
+                
+                <!-- Regular User -->
+                <div class="border rounded-lg p-4 bg-gray-50">
+                    <h3 class="font-semibold text-gray-800">مستخدم عادي</h3>
+                    <p class="text-sm text-gray-600">البريد: user@mueen.io</p>
+                    <p class="text-sm text-gray-600">كلمة المرور: user123</p>
+                </div>
+            </div>
+            
+            <div class="mt-6 text-center">
+                <a href="/login" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md text-sm font-medium inline-block">
+                    تسجيل دخول للاختبار
+                </a>
+            </div>
+            
+            <div class="mt-4 text-center">
+                <p class="text-xs text-gray-500">
+                    قم بتسجيل الدخول بحساب المدير للوصول إلى لوحة الإدارة
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -31,11 +31,18 @@ const tools = [
         color: 'cyan-600'
     },
     {
-        title: 'توليد خطط الدروس',
+        title: 'مولد خطط الدروس',
         description: 'أنشئ خطط دروس متكاملة ومفصلة في ثوانٍ.',
         emoji: '📝',
-        url: '/lesson-plans',
+        url: '/lesson-plan-generator',
         color: 'blue-600'
+    },
+    {
+        title: 'إدارة خطط الدروس',
+        description: 'عرض وإدارة خطط الدروس المحفوظة والمتاحة.',
+        emoji: '📚',
+        url: '/lesson-plans',
+        color: 'indigo-600'
     },
     {
         title: 'مولد الأهداف التعليمية',
@@ -108,73 +115,73 @@ const tools = [
 
     <ArabicDashboardLayout>
         <!-- Header Section -->
-        <div class="bg-white shadow-sm border-b">
+        <div class="bg-card shadow-sm border-b border-border">
             <div class="px-6 py-6">
-                <h1 class="text-3xl font-bold text-gray-900 mb-2">
+                <h1 class="text-3xl font-bold text-foreground mb-2">
                     أهلاً بك في منصة مُعين التعليمية
                 </h1>
-                <p class="text-gray-600">
+                <p class="text-muted-foreground">
                     اختر إحدى أدوات الذكاء الاصطناعي للبدء في رحلتك الإبداعية
                 </p>
             </div>
         </div>
 
         <!-- Main Content -->
-        <div class="flex-1 overflow-y-auto bg-gray-50 p-6">
+        <div class="flex-1 overflow-y-auto bg-background p-6">
             <!-- Stats Section -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                <div class="bg-white rounded-xl shadow-sm p-6 border">
+                <div class="bg-card rounded-xl shadow-sm p-6 border border-border">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
-                            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                            <div class="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
                                 <span class="text-2xl">📝</span>
                             </div>
                         </div>
                         <div class="mr-4">
-                            <p class="text-sm font-medium text-gray-600">خطط الدروس</p>
-                            <p class="text-2xl font-bold text-gray-900">{{ stats.lesson_plans_count }}</p>
+                            <p class="text-sm font-medium text-muted-foreground">خطط الدروس</p>
+                            <p class="text-2xl font-bold text-foreground">{{ stats.lesson_plans_count }}</p>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-white rounded-xl shadow-sm p-6 border">
+                <div class="bg-card rounded-xl shadow-sm p-6 border border-border">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
-                            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                            <div class="w-12 h-12 bg-secondary rounded-lg flex items-center justify-center">
                                 <span class="text-2xl">🎯</span>
                             </div>
                         </div>
                         <div class="mr-4">
-                            <p class="text-sm font-medium text-gray-600">المحتوى المولد</p>
-                            <p class="text-2xl font-bold text-gray-900">{{ stats.generated_content_count }}</p>
+                            <p class="text-sm font-medium text-muted-foreground">المحتوى المولد</p>
+                            <p class="text-2xl font-bold text-foreground">{{ stats.generated_content_count }}</p>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-white rounded-xl shadow-sm p-6 border">
+                <div class="bg-card rounded-xl shadow-sm p-6 border border-border">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
-                            <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                            <div class="w-12 h-12 bg-accent rounded-lg flex items-center justify-center">
                                 <span class="text-2xl">👥</span>
                             </div>
                         </div>
                         <div class="mr-4">
-                            <p class="text-sm font-medium text-gray-600">الفصول</p>
-                            <p class="text-2xl font-bold text-gray-900">{{ stats.classes_count }}</p>
+                            <p class="text-sm font-medium text-muted-foreground">الفصول</p>
+                            <p class="text-2xl font-bold text-foreground">{{ stats.classes_count }}</p>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-white rounded-xl shadow-sm p-6 border">
+                <div class="bg-card rounded-xl shadow-sm p-6 border border-border">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
-                            <div class="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center">
+                            <div class="w-12 h-12 bg-muted rounded-lg flex items-center justify-center">
                                 <span class="text-2xl">⭐</span>
                             </div>
                         </div>
                         <div class="mr-4">
-                            <p class="text-sm font-medium text-gray-600">المفضلة</p>
-                            <p class="text-2xl font-bold text-gray-900">
+                            <p class="text-sm font-medium text-muted-foreground">المفضلة</p>
+                            <p class="text-2xl font-bold text-foreground">
                                 {{ stats.recent_lesson_plans.filter((plan: any) => plan.is_favorite).length }}
                             </p>
                         </div>
@@ -187,18 +194,18 @@ const tools = [
                 <div 
                     v-for="tool in tools" 
                     :key="tool.url"
-                    class="bg-white rounded-xl shadow-sm hover:shadow-lg border transition-all duration-300 hover:-translate-y-1 cursor-pointer group"
+                    class="bg-card rounded-xl shadow-sm hover:shadow-lg border border-border transition-all duration-300 hover:-translate-y-1 cursor-pointer group"
                 >
                     <Link :href="tool.url" class="block p-6 h-full">
                         <div class="flex flex-col h-full">
                             <div class="text-4xl mb-4">{{ tool.emoji }}</div>
-                            <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
+                            <h3 class="text-lg font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
                                 {{ tool.title }}
                             </h3>
-                            <p class="text-gray-600 mb-4 flex-grow text-sm leading-relaxed">
+                            <p class="text-muted-foreground mb-4 flex-grow text-sm leading-relaxed">
                                 {{ tool.description }}
                             </p>
-                            <div class="w-full mt-auto bg-blue-600 text-white py-2.5 rounded-lg font-semibold transition-colors hover:bg-blue-700 text-center">
+                            <div class="w-full mt-auto bg-primary text-primary-foreground py-2.5 rounded-lg font-semibold transition-colors hover:bg-primary/90 text-center">
                                 ابدأ الآن ←
                             </div>
                         </div>
@@ -209,57 +216,57 @@ const tools = [
             <!-- Recent Activity -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <!-- Recent Lesson Plans -->
-                <div class="bg-white rounded-xl shadow-sm border">
-                    <div class="p-6 border-b">
-                        <h3 class="text-lg font-semibold text-gray-900">خطط الدروس الأخيرة</h3>
+                <div class="bg-card rounded-xl shadow-sm border border-border">
+                    <div class="p-6 border-b border-border">
+                        <h3 class="text-lg font-semibold text-foreground">خطط الدروس الأخيرة</h3>
                     </div>
                     <div class="p-6">
                         <div v-if="stats.recent_lesson_plans.length > 0" class="space-y-4">
                             <div 
                                 v-for="plan in stats.recent_lesson_plans" 
                                 :key="plan.id"
-                                class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                                class="flex items-center justify-between p-3 bg-accent/50 rounded-lg hover:bg-accent transition-colors"
                             >
                                 <div>
-                                    <h4 class="font-medium text-gray-900">{{ plan.title }}</h4>
-                                    <p class="text-sm text-gray-600">{{ plan.subject }} - {{ plan.grade_level }}</p>
+                                    <h4 class="font-medium text-foreground">{{ plan.title }}</h4>
+                                    <p class="text-sm text-muted-foreground">{{ plan.subject }} - {{ plan.grade_level }}</p>
                                 </div>
                                 <Link 
                                     :href="`/lesson-plans/${plan.id}`"
-                                    class="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                                    class="text-primary hover:text-primary/80 text-sm font-medium"
                                 >
                                     عرض
                                 </Link>
                             </div>
                         </div>
-                        <div v-else class="text-center py-8 text-gray-500">
+                        <div v-else class="text-center py-8 text-muted-foreground">
                             لم يتم إنشاء أي خطط دروس بعد
                         </div>
                     </div>
                 </div>
 
                 <!-- Recent Generated Content -->
-                <div class="bg-white rounded-xl shadow-sm border">
-                    <div class="p-6 border-b">
-                        <h3 class="text-lg font-semibold text-gray-900">المحتوى المولد مؤخراً</h3>
+                <div class="bg-card rounded-xl shadow-sm border border-border">
+                    <div class="p-6 border-b border-border">
+                        <h3 class="text-lg font-semibold text-foreground">المحتوى المولد مؤخراً</h3>
                     </div>
                     <div class="p-6">
                         <div v-if="stats.recent_content.length > 0" class="space-y-4">
                             <div 
                                 v-for="content in stats.recent_content" 
                                 :key="content.id"
-                                class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                                class="flex items-center justify-between p-3 bg-accent/50 rounded-lg hover:bg-accent transition-colors"
                             >
                                 <div>
-                                    <h4 class="font-medium text-gray-900">{{ content.title }}</h4>
-                                    <p class="text-sm text-gray-600">{{ content.type }}</p>
+                                    <h4 class="font-medium text-foreground">{{ content.title }}</h4>
+                                    <p class="text-sm text-muted-foreground">{{ content.type }}</p>
                                 </div>
-                                <span class="text-xs text-gray-500">
+                                <span class="text-xs text-muted-foreground">
                                     {{ new Date(content.created_at).toLocaleDateString('ar-SA') }}
                                 </span>
                             </div>
                         </div>
-                        <div v-else class="text-center py-8 text-gray-500">
+                        <div v-else class="text-center py-8 text-muted-foreground">
                             لم يتم توليد أي محتوى بعد
                         </div>
                     </div>

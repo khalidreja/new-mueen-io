@@ -2,49 +2,49 @@
     <Head title="مبسّط المفاهيم - منصة مُعين" />
 
     <ArabicDashboardLayout>
-        <div class="min-h-screen bg-gray-50 overflow-auto" dir="rtl">
+        <div class="min-h-screen bg-gray-50 dark:bg-gray-900 overflow-auto" dir="rtl">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <!-- Header -->
                 <div class="flex items-center justify-between mb-8">
                     <div>
-                        <h2 class="text-3xl font-bold text-gray-800 flex items-center">
+                        <h2 class="text-3xl font-bold text-gray-800 dark:text-gray-200 flex items-center">
                             <span class="text-4xl ml-3">⚛️</span>
                             مبسّط المفاهيم
                         </h2>
-                        <p class="text-gray-600 mt-1">
+                        <p class="text-gray-600 dark:text-gray-400 mt-1">
                             حوّل المواضيع المعقدة إلى شروحات بسيطة وسهلة الفهم
                         </p>
                     </div>
                 </div>
 
                 <!-- Main Content -->
-                <div class="bg-white rounded-xl shadow-sm p-6">
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
                     <form @submit.prevent="generateSimplification" class="space-y-6">
                         <!-- Basic Information -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label for="subject" class="block text-sm font-medium text-gray-700 mb-2">
+                                <label for="subject" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                     المادة الدراسية
                                 </label>
                                 <input
                                     id="subject"
                                     v-model="form.subject"
                                     type="text"
-                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                     placeholder="مثل: الرياضيات، الفيزياء، الكيمياء"
                                     required
                                 />
                             </div>
 
                             <div>
-                                <label for="grade" class="block text-sm font-medium text-gray-700 mb-2">
+                                <label for="grade" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                     الصف الدراسي
                                 </label>
                                 <input
                                     id="grade"
                                     v-model="form.grade"
                                     type="text"
-                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                     placeholder="مثل: الصف الثامن المتوسط"
                                     required
                                 />
@@ -53,14 +53,14 @@
 
                         <!-- Complex Concept -->
                         <div>
-                            <label for="complexConcept" class="block text-sm font-medium text-gray-700 mb-2">
+                            <label for="complexConcept" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 المفهوم المعقد المراد تبسيطه
                             </label>
                             <textarea
                                 id="complexConcept"
                                 v-model="form.complexConcept"
                                 rows="4"
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                 placeholder="اكتب المفهوم أو الموضوع المعقد الذي تريد تبسيطه للطلاب..."
                                 required
                             ></textarea>
@@ -68,13 +68,13 @@
 
                         <!-- Target Audience Level -->
                         <div>
-                            <label for="audienceLevel" class="block text-sm font-medium text-gray-700 mb-2">
+                            <label for="audienceLevel" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 مستوى الجمهور المستهدف
                             </label>
                             <select
                                 id="audienceLevel"
                                 v-model="form.audienceLevel"
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             >
                                 <option value="beginner">مبتدئ - لا يوجد معرفة مسبقة</option>
                                 <option value="elementary">أساسي - معرفة محدودة</option>
@@ -85,7 +85,7 @@
 
                         <!-- Simplification Style -->
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 أسلوب التبسيط المطلوب
                             </label>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -148,14 +148,14 @@
 
                         <!-- Additional Context -->
                         <div>
-                            <label for="additionalContext" class="block text-sm font-medium text-gray-700 mb-2">
+                            <label for="additionalContext" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 سياق إضافي أو توجيهات خاصة
                             </label>
                             <textarea
                                 id="additionalContext"
                                 v-model="form.additionalContext"
                                 rows="3"
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                 placeholder="أي معلومات إضافية أو توجيهات خاصة لتبسيط المفهوم..."
                             ></textarea>
                         </div>
@@ -199,7 +199,7 @@
                                 </button>
                             </div>
                         </div>
-                        <div class="bg-gray-50 rounded-lg p-6 prose prose-lg max-w-none">
+                        <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-6 prose prose-lg max-w-none">
                             <div v-html="formattedContent"></div>
                         </div>
                     </div>
@@ -235,7 +235,7 @@ const generateSimplification = async () => {
     loading.value = true
     try {
         const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
-        const response = await fetch('/ai/generate-concept', {
+        const response = await fetch('/ai/generate-concept-simplification', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -254,7 +254,7 @@ const generateSimplification = async () => {
         if (data.success) {
             generatedContent.value = data.content;
         } else {
-            throw new Error(data.error || 'خطأ غير معروف');
+            throw new Error(data.error || data.message || 'حدث خطأ أثناء تبسيط المفهوم');
         }
     } catch (error) {
         console.error('Error generating concept simplification:', error)
@@ -276,21 +276,43 @@ const copyToClipboard = async () => {
 
 const saveContent = async () => {
     try {
-        await router.post('/ai/save-content', {
-            type: 'concept_simplification',
-            title: `تبسيط مفهوم - ${form.value.subject}`,
-            content: generatedContent.value,
-            metadata: {
-                subject: form.value.subject,
-                grade: form.value.grade,
-                audience_level: form.value.audienceLevel,
-                methods: form.value.simplificationMethods
-            }
-        })
-        alert('تم حفظ المحتوى بنجاح!')
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+        
+        const response = await fetch('/ai/save-content', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            },
+            body: JSON.stringify({
+                type: 'concept_simplification',
+                title: `تبسيط مفهوم: ${form.value.concept}`,
+                content: generatedContent.value,
+                metadata: {
+                    concept: form.value.concept,
+                    subject: form.value.subject,
+                    grade: form.value.grade,
+                    difficulty_level: form.value.difficultyLevel,
+                    explanation_type: form.value.explanationType
+                }
+            })
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            alert('تم حفظ المحتوى بنجاح!')
+        } else {
+            throw new Error(data.message || 'فشل في حفظ المحتوى');
+        }
     } catch (error) {
         console.error('Error saving content:', error)
-        alert('فشل في حفظ المحتوى')
+        alert('فشل في حفظ المحتوى. يرجى المحاولة مرة أخرى.')
     }
 }
 </script>

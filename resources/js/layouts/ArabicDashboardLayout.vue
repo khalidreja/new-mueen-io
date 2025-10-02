@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
 import { ref } from 'vue';
+import { useAppearance } from '@/composables/useAppearance';
 
 interface Teacher {
     id: number;
@@ -27,6 +28,12 @@ declare global {
 }
 
 const sidebarOpen = ref(true);
+const { appearance, updateAppearance } = useAppearance();
+
+const toggleDarkMode = () => {
+    const newAppearance = appearance.value === 'dark' ? 'light' : 'dark';
+    updateAppearance(newAppearance);
+};
 
 const menuItems = [
     {
@@ -47,7 +54,7 @@ const menuItems = [
     {
         title: 'مولد خطط الدروس',
         icon: '📝',
-        url: '/objectives-generator'
+        url: '/lesson-plan-generator'
     },
     {
         title: 'إدارة خطط الدروس',
@@ -103,12 +110,12 @@ const menuItems = [
 </script>
 
 <template>
-    <div class="flex h-screen bg-gray-100" dir="rtl">
+    <div class="flex h-screen bg-background transition-colors duration-300" dir="rtl">
         <!-- Sidebar -->
-        <aside class="w-64 bg-gray-900 text-white flex-col shadow-lg flex">
-            <div class="p-6 text-center border-b border-gray-700">
-                <h1 class="text-2xl font-bold text-white">منصة مُعين</h1>
-                <p class="text-sm text-gray-400 mt-1">مساعدك التعليمي الذكي</p>
+        <aside class="w-64 bg-sidebar border-r border-sidebar-border flex-col shadow-lg flex">
+            <div class="p-6 text-center border-b border-sidebar-border">
+                <h1 class="text-2xl font-bold text-sidebar-foreground">منصة مُعين</h1>
+                <p class="text-sm text-muted-foreground mt-1">مساعدك التعليمي الذكي</p>
             </div>
             
             <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
@@ -117,10 +124,10 @@ const menuItems = [
                     :key="item.url"
                     :href="item.url"
                     :class="[
-                        'flex items-center px-4 py-3 rounded-lg transition duration-200 group',
+                        'flex items-center px-4 py-3 rounded-lg transition-colors duration-200 group',
                         $page.url === item.url 
-                            ? 'bg-blue-600 text-white shadow-md' 
-                            : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+                            ? 'bg-sidebar-accent text-sidebar-accent-foreground shadow-md' 
+                            : 'text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground'
                     ]"
                 >
                     <span class="text-xl ml-3">{{ item.icon }}</span>
@@ -128,24 +135,37 @@ const menuItems = [
                 </Link>
             </nav>
             
-            <div class="p-4 border-t border-gray-700">
-                <div class="flex items-center">
-                    <img 
-                        class="w-10 h-10 rounded-full object-cover" 
-                        :src="`https://placehold.co/100x100/7E22CE/FFFFFF?text=${encodeURIComponent($page.props.auth.user.name.charAt(0))}`" 
-                        :alt="$page.props.auth.user.name"
-                    >
-                    <div class="mr-3 flex-1">
-                        <Link 
-                            href="/teacher-profile"
-                            class="font-semibold text-white hover:text-blue-300 transition-colors cursor-pointer block"
+                        <div class="p-4 border-t border-sidebar-border">
+                <div class="flex items-center space-x-3 space-x-reverse">
+                    <div class="w-10 h-10 bg-sidebar-primary rounded-full flex items-center justify-center">
+                        <span class="text-sm font-bold text-sidebar-primary-foreground">
+                            {{ ($page.props.auth.user?.name || 'مستخدم').charAt(0) }}
+                        </span>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-sm font-medium text-sidebar-foreground truncate">
+                            {{ $page.props.auth.user?.name || 'مستخدم' }}
+                        </p>
+                        <p class="text-xs text-muted-foreground truncate">
+                            {{ $page.props.auth.user?.email || 'user@example.com' }}
+                        </p>
+                    </div>
+                    <div class="flex items-center space-x-2 space-x-reverse">
+                        <!-- Dark mode toggle -->
+                        <button 
+                            @click="toggleDarkMode"
+                            class="p-2 rounded-md text-muted-foreground hover:text-sidebar-foreground hover:bg-sidebar-accent/50 transition-colors duration-200"
+                            :title="appearance === 'dark' ? 'التبديل للوضع المضيء' : 'التبديل للوضع المظلم'"
                         >
-                            {{ $page.props.auth.user.name }}
-                        </Link>
+                            <span v-if="appearance === 'dark'" class="text-lg">☀️</span>
+                            <span v-else class="text-lg">🌙</span>
+                        </button>
+                        
                         <Link 
                             href="/logout" 
-                            method="post"
-                            class="text-xs text-red-400 hover:underline"
+                            method="post" 
+                            as="button"
+                            class="text-muted-foreground hover:text-sidebar-foreground transition-colors duration-200"
                         >
                             تسجيل الخروج
                         </Link>
@@ -168,15 +188,15 @@ nav::-webkit-scrollbar {
 }
 
 nav::-webkit-scrollbar-track {
-    background: #374151;
+    background: hsl(var(--sidebar-background));
 }
 
 nav::-webkit-scrollbar-thumb {
-    background: #6B7280;
+    background: hsl(var(--sidebar-border));
     border-radius: 2px;
 }
 
 nav::-webkit-scrollbar-thumb:hover {
-    background: #9CA3AF;
+    background: hsl(var(--sidebar-accent));
 }
 </style>

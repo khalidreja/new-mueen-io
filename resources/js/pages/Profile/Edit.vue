@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import ArabicDashboardLayout from '@/layouts/ArabicDashboardLayout.vue';
-import { Head, useForm } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { Head, useForm, router } from '@inertiajs/vue3';
+import { ref, watch } from 'vue';
 
 interface User {
     id: number;
@@ -187,7 +187,7 @@ const form = useForm({
     years_experience: props.user.years_experience || '',
     qualification: props.user.qualification || '',
     specialization: props.user.specialization || '',
-    classes: [] as ClassData[], // بيانات الفصول
+    classes: props.teacherClasses || [], // بيانات الفصول من props
 });
 
 // معاينة الصورة
@@ -199,6 +199,11 @@ const imagePreview = ref<string | null>(
 
 // مرجع إدخال الملف
 const fileInput = ref<HTMLInputElement | null>(null);
+
+// تحديث form.classes تلقائياً عند تغيير teacherClasses
+watch(teacherClasses, (newClasses) => {
+    form.classes = newClasses;
+}, { deep: true });
 
 // دالة التعامل مع رفع الصورة
 const handleImageUpload = (event: Event) => {
@@ -249,35 +254,70 @@ const handleImageUpload = (event: Event) => {
 };
 
 const submit = () => {
-    // تنظيف البيانات الفارغة قبل الإرسال
-    const cleanedClasses = teacherClasses.value.filter(cls => 
-        cls.className?.trim() && 
-        cls.stage?.trim() && 
-        cls.grade?.trim()
-    ).map(cls => ({
-        ...cls,
-        subjects: cls.subjects?.filter(sub => sub?.trim()) || [],
-        students: cls.students?.filter(student => student.name?.trim()) || []
-    }));
-    
-    // إضافة بيانات الفصول إلى النموذج
-    form.classes = cleanedClasses;
-    
-    console.log('Submitting classes data:', form.classes);
-    
-    form.patch('/teacher-profile', {
-        preserveScroll: true,
-        onSuccess: () => {
-            console.log('Data saved successfully!');
-            alert('تم حفظ البيانات بنجاح! 🎉');
-            // تحديث البيانات المحلية بدلاً من إعادة التحميل
-            teacherClasses.value = cleanedClasses;
-        },
-        onError: (errors) => {
-            console.error('خطأ في حفظ البيانات:', errors);
-            alert('حدث خطأ أثناء حفظ البيانات. يرجى المحاولة مرة أخرى.');
-        }
-    });
+    try {
+        // تنظيف البيانات الفارغة قبل الإرسال
+        const cleanedClasses = teacherClasses.value.filter(cls => 
+            cls.className?.trim() && 
+            cls.stage?.trim() && 
+            cls.grade?.trim()
+        ).map(cls => ({
+            ...cls,
+            subjects: cls.subjects?.filter(sub => sub?.trim()) || [],
+            students: cls.students?.filter(student => student.name?.trim()) || []
+        }));
+        
+        // تحديث بيانات النموذج
+        form.classes = cleanedClasses;
+        
+        console.log('Form data being submitted:', {
+            name: form.name,
+            phone: form.phone,
+            city: form.city,
+            school: form.school,
+            subject: form.subject,
+            stage: form.stage,
+            years_experience: form.years_experience,
+            qualification: form.qualification,
+            specialization: form.specialization,
+            classes: form.classes
+        });
+        
+        form.patch('/teacher-profile', {
+            preserveScroll: true,
+            onSuccess: (page) => {
+                console.log('Data saved successfully!', page);
+                
+                // تحديث البيانات المحلية فوراً
+                teacherClasses.value = cleanedClasses;
+                form.classes = cleanedClasses;
+                
+                console.log('Updated teacherClasses:', teacherClasses.value);
+                console.log('Updated form.classes:', form.classes);
+                
+                // عرض رسالة النجاح
+                alert('تم حفظ البيانات بنجاح! 🎉');
+                
+                // إعادة تحميل البيانات من الخادم للتأكد
+                setTimeout(() => {
+                    router.reload({ only: ['user', 'teacher', 'teacherClasses'] });
+                }, 500);
+            },
+            onError: (errors) => {
+                console.error('خطأ في حفظ البيانات:', errors);
+                let errorMessage = 'حدث خطأ أثناء حفظ البيانات. يرجى المحاولة مرة أخرى.';
+                if (errors.error) {
+                    errorMessage = errors.error;
+                }
+                alert(errorMessage);
+            },
+            onFinish: () => {
+                console.log('Form submission completed');
+            }
+        });
+    } catch (error) {
+        console.error('Submit function error:', error);
+        alert('حدث خطأ غير متوقع. يرجى إعادة تحميل الصفحة والمحاولة مرة أخرى.');
+    }
 };
 </script>
 

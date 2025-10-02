@@ -2,25 +2,25 @@
     <Head title="مولد خطط الدروس - منصة مُعين" />
 
     <ArabicDashboardLayout>
-        <div class="min-h-screen bg-gray-50 overflow-auto" dir="rtl">
+        <div class="min-h-screen bg-gray-50 dark:bg-gray-900 overflow-auto" dir="rtl">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <header class="mb-8">
-                    <h2 class="text-3xl font-bold text-gray-800 flex items-center">
+                    <h2 class="text-3xl font-bold text-gray-800 dark:text-gray-200 flex items-center">
                         <span class="text-4xl ml-3">📝</span>
                         مولد خطط الدروس
                     </h2>
-                    <p class="text-gray-600 mt-1">
+                    <p class="text-gray-600 dark:text-gray-400 dark:text-gray-400 mt-1">
                         أدخل تفاصيل الدرس ليقوم الذكاء الاصطناعي بإنشاء خطة متكاملة لك.
                     </p>
                 </header>
 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <!-- Input Form -->
-                    <div class="lg:col-span-1 bg-white p-6 rounded-xl shadow-md overflow-auto">
+                    <div class="lg:col-span-1 bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md overflow-auto">
                         <form @submit.prevent="generateLessonPlan" class="space-y-5">
                             <!-- مكون اختيار الطالب والفصل -->
                             <div>
-                                <h3 class="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+                                <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-3 flex items-center">
                                     <span class="text-blue-600 ml-2">📚</span>
                                     معلومات الفصل
                                 </h3>
@@ -33,7 +33,7 @@
                             </div>
 
                             <div>
-                                <label for="subject" class="block text-sm font-medium text-gray-700 mb-1">
+                                <label for="subject" class="block text-sm font-medium text-gray-700 dark:text-gray-300 dark:text-gray-300 mb-1">
                                     المادة
                                 </label>
                                 <input 
@@ -42,12 +42,12 @@
                                     v-model="form.subject"
                                     placeholder="مثال: العلوم" 
                                     required 
-                                    class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    class="w-full p-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                                 >
                             </div>
 
                             <div>
-                                <label for="grade" class="block text-sm font-medium text-gray-700 mb-1">
+                                <label for="grade" class="block text-sm font-medium text-gray-700 dark:text-gray-300 dark:text-gray-300 mb-1">
                                     المرحلة والصف
                                 </label>
                                 <input 
@@ -56,12 +56,12 @@
                                     v-model="form.grade"
                                     placeholder="مثال: الصف الأول متوسط" 
                                     required 
-                                    class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    class="w-full p-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                                 >
                             </div>
 
                             <div>
-                                <label for="class_name" class="block text-sm font-medium text-gray-700 mb-1">
+                                <label for="class_name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 dark:text-gray-300 mb-1">
                                     اسم الفصل
                                 </label>
                                 <input 
@@ -70,12 +70,12 @@
                                     v-model="form.class_name"
                                     placeholder="مثال: 1أ" 
                                     required 
-                                    class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    class="w-full p-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                                 >
                             </div>
 
                             <div>
-                                <label for="duration" class="block text-sm font-medium text-gray-700 mb-1">
+                                <label for="duration" class="block text-sm font-medium text-gray-700 dark:text-gray-300 dark:text-gray-300 mb-1">
                                     مدة الحصة (بالدقائق)
                                 </label>
                                 <input 
@@ -85,12 +85,12 @@
                                     placeholder="45" 
                                     required 
                                     min="1"
-                                    class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    class="w-full p-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                                 >
                             </div>
 
                             <div>
-                                <label for="topic" class="block text-sm font-medium text-gray-700 mb-1">
+                                <label for="topic" class="block text-sm font-medium text-gray-700 dark:text-gray-300 dark:text-gray-300 mb-1">
                                     الموضوع
                                 </label>
                                 <textarea 
@@ -99,7 +99,7 @@
                                     placeholder="مثال: الخلية النباتية والحيوانية" 
                                     required 
                                     rows="3" 
-                                    class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    class="w-full p-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                                 ></textarea>
                             </div>
 
@@ -115,9 +115,9 @@
                     </div>
 
                     <!-- Generated Content -->
-                    <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-md">
+                    <div class="lg:col-span-2 bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md">
                         <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-xl font-bold text-gray-800">الخطة المُولّدة</h3>
+                            <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200">الخطة المُولّدة</h3>
                             <button 
                                 v-if="generatedContent && !loading"
                                 @click="saveLessonPlan"
@@ -129,11 +129,11 @@
 
                         <div v-if="loading" class="text-center py-12">
                             <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-                            <p class="mt-4 text-gray-600">يقوم الذكاء الاصطناعي بإعداد الخطة...</p>
+                            <p class="mt-4 text-gray-600 dark:text-gray-400">يقوم الذكاء الاصطناعي بإعداد الخطة...</p>
                         </div>
 
-                        <div v-else-if="generatedContent" class="prose max-w-none text-gray-700">
-                            <div class="bg-gray-50 p-4 rounded-md border" v-html="formattedContent"></div>
+                        <div v-else-if="generatedContent" class="prose max-w-none text-gray-700 dark:text-gray-300">
+                            <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-md border border-gray-200 dark:border-gray-600" v-html="formattedContent"></div>
                         </div>
 
                         <div v-else class="text-center py-12 text-gray-500">
@@ -192,7 +192,7 @@ const formattedContent = computed(() => {
     return generatedContent.value
         .replace(/\n/g, '<br>')
         .replace(/## (.*)/g, '<h3 class="text-lg font-semibold mt-4 mb-2 text-gray-800">$1</h3>')
-        .replace(/### (.*)/g, '<h4 class="text-md font-semibold mt-3 mb-1 text-gray-700">$1</h4>')
+        .replace(/### (.*)/g, '<h4 class="text-md font-semibold mt-3 mb-1 text-gray-700 dark:text-gray-300">$1</h4>')
         .replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold">$1</strong>')
         .replace(/- (.*)/g, '<li class="mr-4">$1</li>');
 });

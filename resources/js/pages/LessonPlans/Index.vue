@@ -2,16 +2,16 @@
     <Head title="إدارة خطط الدروس - منصة مُعين" />
 
     <ArabicDashboardLayout>
-        <div class="min-h-screen bg-gray-50 overflow-auto" dir="rtl">
+        <div class="min-h-screen bg-gray-50 dark:bg-gray-900 overflow-auto" dir="rtl">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <!-- Header -->
                 <div class="flex items-center justify-between mb-8">
                     <div>
-                        <h2 class="text-3xl font-bold text-gray-800 flex items-center">
+                        <h2 class="text-3xl font-bold text-gray-800 dark:text-gray-200 flex items-center">
                             <span class="text-4xl ml-3">📚</span>
                             إدارة خطط الدروس
                         </h2>
-                        <p class="text-gray-600 mt-1">
+                        <p class="text-gray-600 dark:text-gray-400 dark:text-gray-400 mt-1">
                             عرض وإدارة جميع خطط الدروس المرتبطة بفصولك ومواد التدريس
                         </p>
                     </div>
@@ -26,63 +26,63 @@
 
                 <!-- Statistics Cards -->
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                    <div class="bg-white rounded-lg p-6 shadow-sm">
+                    <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
                         <div class="flex items-center">
-                            <div class="p-3 rounded-full bg-blue-100 text-blue-600">
+                            <div class="p-3 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400">
                                 <span class="text-2xl">📄</span>
                             </div>
                             <div class="mr-4">
-                                <p class="text-sm font-medium text-gray-600">إجمالي الخطط</p>
-                                <p class="text-2xl font-bold text-gray-900">{{ lessonPlans?.data?.length || 0 }}</p>
+                                <p class="text-sm font-medium text-gray-600 dark:text-gray-400 dark:text-gray-400">إجمالي الخطط</p>
+                                <p class="text-2xl font-bold text-gray-900 dark:text-gray-100 dark:text-gray-100">{{ lessonPlans?.data?.length || 0 }}</p>
                             </div>
                         </div>
                     </div>
                     
-                    <div class="bg-white rounded-lg p-6 shadow-sm">
+                    <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
                         <div class="flex items-center">
-                            <div class="p-3 rounded-full bg-green-100 text-green-600">
+                            <div class="p-3 rounded-full bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-400">
                                 <span class="text-2xl">✅</span>
                             </div>
                             <div class="mr-4">
-                                <p class="text-sm font-medium text-gray-600">نشطة</p>
-                                <p class="text-2xl font-bold text-gray-900">{{ activeCount }}</p>
+                                <p class="text-sm font-medium text-gray-600 dark:text-gray-400 dark:text-gray-400">نشطة</p>
+                                <p class="text-2xl font-bold text-gray-900 dark:text-gray-100 dark:text-gray-100">{{ activeCount }}</p>
                             </div>
                         </div>
                     </div>
                     
-                    <div class="bg-white rounded-lg p-6 shadow-sm">
+                    <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
                         <div class="flex items-center">
-                            <div class="p-3 rounded-full bg-yellow-100 text-yellow-600">
+                            <div class="p-3 rounded-full bg-yellow-100 dark:bg-yellow-900 text-yellow-600 dark:text-yellow-400">
                                 <span class="text-2xl">📝</span>
                             </div>
                             <div class="mr-4">
-                                <p class="text-sm font-medium text-gray-600">مسودات</p>
-                                <p class="text-2xl font-bold text-gray-900">{{ draftCount }}</p>
+                                <p class="text-sm font-medium text-gray-600 dark:text-gray-400 dark:text-gray-400">مسودات</p>
+                                <p class="text-2xl font-bold text-gray-900 dark:text-gray-100 dark:text-gray-100">{{ draftCount }}</p>
                             </div>
                         </div>
                     </div>
                     
-                    <div class="bg-white rounded-lg p-6 shadow-sm">
+                    <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
                         <div class="flex items-center">
-                            <div class="p-3 rounded-full bg-purple-100 text-purple-600">
+                            <div class="p-3 rounded-full bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-400">
                                 <span class="text-2xl">🎓</span>
                             </div>
                             <div class="mr-4">
-                                <p class="text-sm font-medium text-gray-600">مكتملة</p>
-                                <p class="text-2xl font-bold text-gray-900">{{ completedCount }}</p>
+                                <p class="text-sm font-medium text-gray-600 dark:text-gray-400 dark:text-gray-400">مكتملة</p>
+                                <p class="text-2xl font-bold text-gray-900 dark:text-gray-100 dark:text-gray-100">{{ completedCount }}</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Filters -->
-                <div class="bg-white rounded-lg p-6 shadow-sm mb-8">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-4">تصفية الخطط</h3>
+                <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm mb-8">
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 dark:text-gray-200 mb-4">تصفية الخطط</h3>
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">المادة</label>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">المادة</label>
                             <select v-model="selectedFilters.subject" @change="applyFilters" 
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                                 <option value="">جميع المواد</option>
                                 <option v-for="subject in availableSubjects" :key="subject" :value="subject">
                                     {{ subject }}
@@ -91,9 +91,9 @@
                         </div>
                         
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">الصف</label>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">الصف</label>
                             <select v-model="selectedFilters.grade" @change="applyFilters"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                                 <option value="">جميع الصفوف</option>
                                 <option v-for="grade in availableGrades" :key="grade" :value="grade">
                                     {{ grade }}
@@ -102,9 +102,9 @@
                         </div>
                         
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">الفصل</label>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">الفصل</label>
                             <select v-model="selectedFilters.class_name" @change="applyFilters"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                                 <option value="">جميع الفصول</option>
                                 <option v-for="className in availableClasses" :key="className" :value="className">
                                     {{ className }}
@@ -113,9 +113,9 @@
                         </div>
                         
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">الحالة</label>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">الحالة</label>
                             <select v-model="selectedFilters.status" @change="applyFilters"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                                 <option value="">جميع الحالات</option>
                                 <option value="draft">مسودة</option>
                                 <option value="active">نشط</option>
@@ -129,13 +129,13 @@
                 <!-- Lesson Plans Grid -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8" v-if="lessonPlans?.data?.length > 0">
                     <div v-for="plan in lessonPlans.data" :key="plan.id" 
-                         class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
+                         class="bg-white dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
                         <div class="p-6">
                             <!-- Header with Status -->
                             <div class="flex justify-between items-start mb-4">
                                 <div class="flex-1">
-                                    <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ plan.title }}</h3>
-                                    <div class="flex items-center text-sm text-gray-600 space-x-4 space-x-reverse">
+                                    <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">{{ plan.title }}</h3>
+                                    <div class="flex items-center text-sm text-gray-600 dark:text-gray-400 space-x-4 space-x-reverse">
                                         <span class="flex items-center">
                                             <span class="ml-1">📚</span>
                                             {{ plan.subject }}
@@ -154,7 +154,7 @@
                             </div>
 
                             <!-- Class and Duration Info -->
-                            <div class="flex items-center justify-between text-sm text-gray-600 mb-4">
+                            <div class="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400 mb-4">
                                 <span class="flex items-center">
                                     <span class="ml-1">🏫</span>
                                     {{ plan.class_name }}
@@ -171,7 +171,7 @@
                             </div>
 
                             <!-- Date Info -->
-                            <div class="text-xs text-gray-500 mb-4">
+                            <div class="text-xs text-gray-500 dark:text-gray-400 mb-4">
                                 <div v-if="plan.lesson_date" class="flex items-center mb-1">
                                     <span class="ml-1">📅</span>
                                     تاريخ الدرس: {{ formatDate(plan.lesson_date) }}
@@ -219,8 +219,8 @@
                 <!-- Empty State -->
                 <div v-if="!lessonPlans?.data?.length" class="text-center py-12">
                     <div class="text-6xl mb-4">📚</div>
-                    <h3 class="text-xl font-semibold text-gray-900 mb-2">لا توجد خطط دروس محفوظة</h3>
-                    <p class="text-gray-600 mb-6">ابدأ بإنشاء خطة درس جديدة باستخدام مولد خطط الدروس</p>
+                    <h3 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">لا توجد خطط دروس محفوظة</h3>
+                    <p class="text-gray-600 dark:text-gray-400 mb-6">ابدأ بإنشاء خطة درس جديدة باستخدام مولد خطط الدروس</p>
                     <Link href="/objectives-generator" 
                           class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors inline-flex items-center">
                         <span class="ml-2">➕</span>
@@ -232,14 +232,14 @@
                 <div v-if="lessonPlans?.data?.length > 0 && lessonPlans.last_page > 1" class="flex justify-center">
                     <nav class="flex items-center space-x-2 space-x-reverse">
                         <Link v-if="lessonPlans.prev_page_url" :href="lessonPlans.prev_page_url"
-                              class="px-3 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+                              class="px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600">
                             السابق
                         </Link>
                         <span class="px-3 py-2 bg-blue-600 text-white rounded-lg">
                             {{ lessonPlans.current_page }} من {{ lessonPlans.last_page }}
                         </span>
                         <Link v-if="lessonPlans.next_page_url" :href="lessonPlans.next_page_url"
-                              class="px-3 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+                              class="px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600">
                             التالي
                         </Link>
                     </nav>
@@ -249,11 +249,11 @@
 
         <!-- View Modal -->
         <div v-if="showViewModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div class="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-                <div class="sticky top-0 bg-white border-b border-gray-200 px-6 py-4">
+            <div class="bg-white dark:bg-gray-800 rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+                <div class="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-600 px-6 py-4">
                     <div class="flex justify-between items-center">
-                        <h3 class="text-xl font-bold text-gray-900">{{ selectedPlan?.title }}</h3>
-                        <button @click="closeViewModal" class="text-gray-400 hover:text-gray-600">
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100">{{ selectedPlan?.title }}</h3>
+                        <button @click="closeViewModal" class="text-gray-400 hover:text-gray-600 dark:text-gray-400">
                             <span class="text-2xl">×</span>
                         </button>
                     </div>
