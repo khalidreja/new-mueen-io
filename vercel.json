@@ -1,0 +1,38 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "public/index.php",
+      "use": "vercel-php@0.6.0"
+    },
+    {
+      "src": "package.json",
+      "use": "@vercel/node@3"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/build/(.*)",
+      "dest": "public/build/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "public/index.php"
+    }
+  ],
+  "env": {
+    "APP_NAME": "منصة مُعين",
+    "APP_ENV": "production",
+    "APP_DEBUG": "false",
+    "APP_LOCALE": "ar",
+    "APP_FALLBACK_LOCALE": "ar",
+    "GEMINI_API_KEY": "@gemini_api_key"
+  },
+  "functions": {
+    "public/index.php": {
+      "runtime": "vercel-php@0.6.0",
+      "maxDuration": 30
+    }
+  },
+  "buildCommand": "npm install && npm run build && composer install --optimize-autoloader --no-dev"
+}

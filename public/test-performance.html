@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار تقرير الأداء</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 20px; background: #f5f5f5; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .test-section { margin: 20px 0; padding: 20px; border: 2px solid #e0e0e0; border-radius: 8px; }
+        .success { border-color: #4CAF50; background: #f8fff8; }
+        .error { border-color: #f44336; background: #fff8f8; }
+        .loading { border-color: #2196F3; background: #f8f9ff; }
+        button { background: #007bff; color: white; border: none; padding: 12px 24px; border-radius: 5px; cursor: pointer; font-size: 16px; margin: 5px; }
+        button:hover { background: #0056b3; }
+        button:disabled { background: #ccc; cursor: not-allowed; }
+        .output { margin-top: 15px; padding: 15px; background: #f9f9f9; border-radius: 5px; white-space: pre-wrap; min-height: 60px; max-height: 400px; overflow-y: auto; }
+        .success .output { background: #e8f5e8; }
+        .error .output { background: #ffe8e8; }
+        h1 { color: #333; text-align: center; }
+        h3 { color: #555; margin-bottom: 10px; }
+        input, textarea { width: 100%; padding: 8px; margin: 5px 0; border: 1px solid #ddd; border-radius: 4px; font-family: inherit; }
+        label { display: block; font-weight: bold; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 اختبار تقرير الأداء</h1>
+        
+        <div class="test-section">
+            <h3>بيانات الطالب</h3>
+            <label>اسم الطالب:</label>
+            <input type="text" id="studentName" value="أحمد محمد الأحمد">
+            
+            <label>المادة:</label>
+            <input type="text" id="subject" value="الرياضيات">
+            
+            <label>الصف:</label>
+            <input type="text" id="grade" value="الصف الخامس">
+            
+            <label>نقاط القوة:</label>
+            <textarea id="strengths" rows="2">متفوق في العمليات الحسابية البسيطة وحل المسائل</textarea>
+            
+            <label>نقاط الضعف:</label>
+            <textarea id="weaknesses" rows="2">يحتاج تحسين في الكسور والقسمة المطولة</textarea>
+            
+            <label>التوصيات:</label>
+            <textarea id="recommendations" rows="2">زيادة التمارين العملية والأنشطة التفاعلية</textarea>
+            
+            <button onclick="testPerformanceReview()" id="testBtn">إنشاء تقرير الأداء</button>
+        </div>
+
+        <div id="resultSection" class="test-section" style="display: none;">
+            <h3>نتيجة تقرير الأداء</h3>
+            <div id="resultOutput" class="output"></div>
+        </div>
+    </div>
+
+    <script>
+        async function testPerformanceReview() {
+            const btn = document.getElementById('testBtn');
+            const resultSection = document.getElementById('resultSection');
+            const output = document.getElementById('resultOutput');
+            
+            // جمع البيانات
+            const data = {
+                student_name: document.getElementById('studentName').value,
+                subject: document.getElementById('subject').value,
+                grade: document.getElementById('grade').value,
+                strengths: document.getElementById('strengths').value,
+                weaknesses: document.getElementById('weaknesses').value,
+                recommendations: document.getElementById('recommendations').value
+            };
+            
+            // إظهار حالة التحميل
+            btn.disabled = true;
+            btn.textContent = 'جاري إنشاء التقرير...';
+            resultSection.style.display = 'block';
+            resultSection.className = 'test-section loading';
+            output.textContent = 'جاري التواصل مع الذكاء الاصطناعي لإنشاء التقرير...';
+            
+            try {
+                const response = await fetch('http://127.0.0.1:8080/api/ai-tools/generate/performance-review', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    resultSection.className = 'test-section success';
+                    output.textContent = `✅ تم إنشاء التقرير بنجاح!\n\n${result.content}`;
+                } else {
+                    resultSection.className = 'test-section error';
+                    output.textContent = `❌ خطأ: ${result.error}`;
+                }
+                
+            } catch (error) {
+                resultSection.className = 'test-section error';
+                output.textContent = `❌ خطأ في الاتصال: ${error.message}
+                
+تأكد من:
+1. تشغيل الخادم على http://127.0.0.1:8080
+2. تفعيل API key لـ Gemini
+3. الاتصال بالإنترنت`;
+            }
+            
+            btn.disabled = false;
+            btn.textContent = 'إنشاء تقرير الأداء';
+        }
+    </script>
+</body>
+</html>

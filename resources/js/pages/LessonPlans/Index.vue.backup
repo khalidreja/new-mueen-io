@@ -1,0 +1,426 @@
+<template>
+    <Head title="إدارة خطط الدروس - منصة مُعين" />
+
+    <ArabicDashboardLayout>
+        <div class="min-h-screen bg-gray-50 overflow-auto" dir="rtl">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <!-- Header -->
+                <div class="flex items-center justify-between mb-8">
+                    <div>
+                        <h2 class="text-3xl font-bold text-gray-800 flex items-center">
+                            <span class="text-4xl ml-3">�</span>
+                            إدارة خطط الدروس
+                        </h2>
+                        <p class="text-gray-600 mt-1">
+                            عرض وإدارة جميع خطط الدروس المرتبطة بفصولك ومواد التدريس
+                        </p>
+                    </div>
+                    <Link 
+                        :href="route('objectives-generator')" 
+                        class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center"
+                    >
+                        <span class="ml-2">➕</span>
+                        إنشاء خطة جديدة
+                    </Link>
+                </div>
+
+                <!-- Statistics Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white rounded-lg p-6 shadow-sm">
+                        <div class="flex items-center">
+                            <div class="p-3 rounded-full bg-blue-100 text-blue-600">
+                                <span class="text-2xl">📄</span>
+                            </div>
+                            <div class="mr-4">
+                                <p class="text-sm font-medium text-gray-600">إجمالي الخطط</p>
+                                <p class="text-2xl font-bold text-gray-900">{{ lessonPlans.total || 0 }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg p-6 shadow-sm">
+                        <div class="flex items-center">
+                            <div class="p-3 rounded-full bg-green-100 text-green-600">
+                                <span class="text-2xl">✅</span>
+                            </div>
+                            <div class="mr-4">
+                                <p class="text-sm font-medium text-gray-600">نشطة</p>
+                                <p class="text-2xl font-bold text-gray-900">{{ activeCount }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg p-6 shadow-sm">
+                        <div class="flex items-center">
+                            <div class="p-3 rounded-full bg-yellow-100 text-yellow-600">
+                                <span class="text-2xl">📝</span>
+                            </div>
+                            <div class="mr-4">
+                                <p class="text-sm font-medium text-gray-600">مسودات</p>
+                                <p class="text-2xl font-bold text-gray-900">{{ draftCount }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg p-6 shadow-sm">
+                        <div class="flex items-center">
+                            <div class="p-3 rounded-full bg-purple-100 text-purple-600">
+                                <span class="text-2xl">🎓</span>
+                            </div>
+                            <div class="mr-4">
+                                <p class="text-sm font-medium text-gray-600">مكتملة</p>
+                                <p class="text-2xl font-bold text-gray-900">{{ completedCount }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filters -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border mb-6">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">البحث</label>
+                            <input 
+                                type="text" 
+                                v-model="searchQuery"
+                                placeholder="ابحث في العناوين..."
+                                class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            >
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">المادة</label>
+                            <select 
+                                v-model="selectedSubject"
+                                class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            >
+                                <option value="">جميع المواد</option>
+                                <option v-for="subject in subjects" :key="subject" :value="subject">
+                                    {{ subject }}
+                                </option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">المرحلة</label>
+                            <select 
+                                v-model="selectedGrade"
+                                class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            >
+                                <option value="">جميع المراحل</option>
+                                <option v-for="grade in grades" :key="grade" :value="grade">
+                                    {{ grade }}
+                                </option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">الترتيب</label>
+                            <select 
+                                v-model="sortBy"
+                                class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            >
+                                <option value="created_at">الأحدث</option>
+                                <option value="title">العنوان</option>
+                                <option value="subject">المادة</option>
+                                <option value="is_favorite">المفضلة</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lesson Plans Grid -->
+                <div v-if="filteredLessonPlans.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div 
+                        v-for="lessonPlan in filteredLessonPlans" 
+                        :key="lessonPlan.id"
+                        class="bg-white rounded-xl shadow-sm hover:shadow-lg border transition-all duration-300 hover:-translate-y-1"
+                    >
+                        <div class="p-6">
+                            <div class="flex items-start justify-between mb-3">
+                                <div class="flex-1">
+                                    <h3 class="text-lg font-semibold text-gray-900 mb-1 line-clamp-2">
+                                        {{ lessonPlan.title }}
+                                    </h3>
+                                    <div class="flex items-center gap-2 text-sm text-gray-600">
+                                        <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
+                                            {{ lessonPlan.subject }}
+                                        </span>
+                                        <span class="bg-gray-100 text-gray-800 px-2 py-1 rounded-full">
+                                            {{ lessonPlan.grade_level }}
+                                        </span>
+                                    </div>
+                                </div>
+                                <button 
+                                    @click="toggleFavorite(lessonPlan)"
+                                    :class="[
+                                        'p-2 rounded-full transition-colors',
+                                        lessonPlan.is_favorite 
+                                            ? 'text-yellow-500 hover:text-yellow-600' 
+                                            : 'text-gray-400 hover:text-yellow-500'
+                                    ]"
+                                >
+                                    <span class="text-xl">{{ lessonPlan.is_favorite ? '⭐' : '☆' }}</span>
+                                </button>
+                            </div>
+
+                            <p class="text-gray-600 text-sm mb-4 line-clamp-3">
+                                {{ lessonPlan.topic }}
+                            </p>
+
+                            <div class="flex items-center justify-between text-xs text-gray-500 mb-4">
+                                <span>{{ formatDate(lessonPlan.created_at) }}</span>
+                                <span v-if="lessonPlan.objectives && lessonPlan.objectives.length">
+                                    {{ lessonPlan.objectives.length }} أهداف
+                                </span>
+                            </div>
+
+                            <div class="flex gap-2">
+                                <Link 
+                                    :href="`/lesson-plans/${lessonPlan.id}`"
+                                    class="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors text-center text-sm"
+                                >
+                                    عرض التفاصيل
+                                </Link>
+                                <Link 
+                                    :href="`/lesson-plans/${lessonPlan.id}/edit`"
+                                    class="bg-gray-200 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors text-sm"
+                                >
+                                    تعديل
+                                </Link>
+                                <button 
+                                    @click="deleteLessonPlan(lessonPlan)"
+                                    class="bg-red-100 text-red-600 py-2 px-4 rounded-lg hover:bg-red-200 transition-colors text-sm"
+                                >
+                                    حذف
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Empty State -->
+                <div v-else-if="lessonPlans.data.length === 0" class="text-center py-12">
+                    <span class="text-8xl block mb-4">📝</span>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">لا توجد خطط دروس بعد</h3>
+                    <p class="text-gray-600 mb-6">ابدأ بإنشاء خطة درس جديدة باستخدام مولد الذكاء الاصطناعي</p>
+                    <Link 
+                        href="/lesson-plans/create" 
+                        class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors inline-flex items-center"
+                    >
+                        <span class="text-xl ml-2">+</span>
+                        إنشاء خطة درس جديدة
+                    </Link>
+                </div>
+
+                <!-- No Results -->
+                <div v-else class="text-center py-12">
+                    <span class="text-8xl block mb-4">🔍</span>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">لا توجد نتائج</h3>
+                    <p class="text-gray-600">جرب تغيير معايير البحث</p>
+                </div>
+
+                <!-- Pagination -->
+                <div v-if="lessonPlans.data.length > 0" class="mt-8 flex justify-center">
+                    <nav class="flex items-center gap-2">
+                        <Link 
+                            v-if="lessonPlans.prev_page_url"
+                            :href="lessonPlans.prev_page_url"
+                            class="px-3 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                        >
+                            السابق
+                        </Link>
+                        
+                        <span class="px-4 py-2 text-sm text-gray-600">
+                            صفحة {{ lessonPlans.current_page }} من {{ lessonPlans.last_page }}
+                        </span>
+                        
+                        <Link 
+                            v-if="lessonPlans.next_page_url"
+                            :href="lessonPlans.next_page_url"
+                            class="px-3 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                        >
+                            التالي
+                        </Link>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </ArabicDashboardLayout>
+</template>
+
+<script setup lang="ts">
+import { Head, Link, router } from '@inertiajs/vue3'
+import ArabicDashboardLayout from '@/layouts/ArabicDashboardLayout.vue'
+import { ref, computed } from 'vue'
+
+interface LessonPlan {
+    id: number;
+    title: string;
+    subject: string;
+    grade: string;
+    class_name: string;
+    duration: number;
+    content: string;
+    objectives: string[] | null;
+    activities: string[] | null;
+    resources: string[] | null;
+    assessment: string | null;
+    notes: string | null;
+    lesson_date: string | null;
+    status: 'draft' | 'active' | 'completed' | 'archived';
+    created_at: string;
+    updated_at: string;
+}
+
+interface Props {
+    lessonPlans: {
+        data: LessonPlan[];
+        current_page: number;
+        last_page: number;
+        prev_page_url: string | null;
+        next_page_url: string | null;
+        total: number;
+    };
+    teacherClasses: Array<{
+        name: string;
+        grade: string;
+        stage: string;
+        subjects: string[];
+    }>;
+    filters: {
+        subject?: string;
+        grade?: string;
+        class_name?: string;
+        status?: string;
+    };
+}
+
+const props = defineProps<Props>()
+
+const selectedFilters = ref({
+    subject: props.filters?.subject || '',
+    grade: props.filters?.grade || '',
+    class_name: props.filters?.class_name || '',
+    status: props.filters?.status || ''
+})
+
+const showViewModal = ref(false)
+const selectedPlan = ref<LessonPlan | null>(null)
+
+// Computed statistics
+const activeCount = computed(() => props.lessonPlans.data.filter(plan => plan.status === 'active').length)
+const draftCount = computed(() => props.lessonPlans.data.filter(plan => plan.status === 'draft').length)
+const completedCount = computed(() => props.lessonPlans.data.filter(plan => plan.status === 'completed').length)
+
+// Available filter options from teacher classes
+const availableSubjects = computed(() => {
+    if (!props.teacherClasses) return []
+    const subjects = new Set<string>()
+    props.teacherClasses.forEach(classData => {
+        if (classData.subjects && Array.isArray(classData.subjects)) {
+            classData.subjects.forEach(subject => subjects.add(subject))
+        }
+    })
+    return Array.from(subjects)
+})
+
+const availableGrades = computed(() => {
+    if (!props.teacherClasses) return []
+    const grades = new Set<string>()
+    props.teacherClasses.forEach(classData => {
+        if (classData.grade) grades.add(classData.grade)
+    })
+    return Array.from(grades)
+})
+
+const availableClasses = computed(() => {
+    if (!props.teacherClasses) return []
+    return props.teacherClasses.map(classData => classData.name).filter(Boolean)
+})
+
+const filteredLessonPlans = computed(() => {
+    let filtered = [...props.lessonPlans.data];
+
+    // Search filter
+    if (searchQuery.value) {
+        filtered = filtered.filter(plan => 
+            plan.title.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+            plan.topic.toLowerCase().includes(searchQuery.value.toLowerCase())
+        );
+    }
+
+    // Subject filter
+    if (selectedSubject.value) {
+        filtered = filtered.filter(plan => plan.subject === selectedSubject.value);
+    }
+
+    // Grade filter
+    if (selectedGrade.value) {
+        filtered = filtered.filter(plan => plan.grade_level === selectedGrade.value);
+    }
+
+    // Sort
+    filtered.sort((a, b) => {
+        switch (sortBy.value) {
+            case 'title':
+                return a.title.localeCompare(b.title, 'ar');
+            case 'subject':
+                return a.subject.localeCompare(b.subject, 'ar');
+            case 'is_favorite':
+                return (b.is_favorite ? 1 : 0) - (a.is_favorite ? 1 : 0);
+            case 'created_at':
+            default:
+                return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+        }
+    });
+
+    return filtered;
+});
+
+const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('ar-SA', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+};
+
+const toggleFavorite = async (lessonPlan: LessonPlan) => {
+    try {
+        await axios.post(`/lesson-plans/${lessonPlan.id}/toggle-favorite`);
+        lessonPlan.is_favorite = !lessonPlan.is_favorite;
+    } catch (error) {
+        console.error('Error toggling favorite:', error);
+        alert('حدث خطأ في تحديث المفضلة');
+    }
+};
+
+const deleteLessonPlan = async (lessonPlan: LessonPlan) => {
+    if (!confirm(`هل أنت متأكد من حذف خطة الدرس "${lessonPlan.title}"؟`)) {
+        return;
+    }
+
+    try {
+        await axios.delete(`/lesson-plans/${lessonPlan.id}`);
+        router.reload();
+    } catch (error) {
+        console.error('Error deleting lesson plan:', error);
+        alert('حدث خطأ في حذف خطة الدرس');
+    }
+};
+</script>
+
+<style scoped>
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+</style>
