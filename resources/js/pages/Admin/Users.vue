@@ -112,11 +112,11 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <span :class="{
-                                        'bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200': user.membership === 'premium',
-                                        'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200': user.membership === 'pro',
-                                        'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200': user.membership === 'free'
+                                        'bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200': user.subscription_type === 'premium',
+                                        'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200': user.subscription_type === 'pro',
+                                        'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200': user.subscription_type === 'free'
                                     }" class="inline-flex px-2 py-1 text-xs font-semibold rounded-full">
-                                        {{ getMembershipLabel(user.membership) }}
+                                        {{ getMembershipLabel(user.subscription_type) }}
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
@@ -322,7 +322,10 @@ const openCreateModal = () => {
 
 const editUser = (user) => {
     isEditing.value = true
-    userForm.value = { ...user }
+    userForm.value = { 
+        ...user,
+        membership: user.subscription_type || 'free'
+    }
     showModal.value = true
 }
 
@@ -333,33 +336,34 @@ const closeModal = () => {
 const saveUser = () => {
     if (isEditing.value) {
         // Update existing user
-        const index = users.value.findIndex(u => u.id === userForm.value.id)
-        if (index !== -1) {
-            users.value[index] = { ...userForm.value }
-        }
+        router.put(route('admin.users.update', userForm.value.id), userForm.value, {
+            onSuccess: () => {
+                closeModal()
+            }
+        })
     } else {
         // Create new user
-        const newUser = {
-            ...userForm.value,
-            id: Math.max(...users.value.map(u => u.id)) + 1,
-            status: 'active',
-            created_at: new Date().toISOString()
-        }
-        users.value.push(newUser)
+        router.post(route('admin.users.store'), userForm.value, {
+            onSuccess: () => {
+                closeModal()
+            }
+        })
     }
-    closeModal()
 }
 
 const toggleUserStatus = (user) => {
-    user.status = user.status === 'suspended' ? 'active' : 'suspended'
+    if (confirm(`هل أنت متأكد من ${user.status === 'suspended' ? 'إلغاء حظر' : 'حظر'} هذا المستخدم؟`)) {
+        router.patch(route('admin.users.toggle-status', user.id), {}, {
+            preserveScroll: true
+        })
+    }
 }
 
 const deleteUser = (user) => {
-    if (confirm('هل أنت متأكد من حذف هذا المستخدم؟')) {
-        const index = users.value.findIndex(u => u.id === user.id)
-        if (index !== -1) {
-            users.value.splice(index, 1)
-        }
+    if (confirm('هل أنت متأكد من حذف هذا المستخدم؟ لا يمكن التراجع عن هذا الإجراء.')) {
+        router.delete(route('admin.users.destroy', user.id), {
+            preserveScroll: true
+        })
     }
 }
 

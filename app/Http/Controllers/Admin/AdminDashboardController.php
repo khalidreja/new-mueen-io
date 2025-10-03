@@ -195,6 +195,7 @@ class AdminDashboardController extends Controller
             'email' => 'required|email|unique:users',
             'password' => 'required|min:8',
             'role' => 'required|in:admin,teacher,user',
+            'membership' => 'sometimes|in:free,premium,pro',
         ]);
 
         $user = User::create([
@@ -202,6 +203,8 @@ class AdminDashboardController extends Controller
             'email' => $request->email,
             'password' => bcrypt($request->password),
             'role' => $request->role,
+            'subscription_type' => $request->membership ?? 'free',
+            'status' => 'active',
         ]);
 
         return redirect()->route('admin.users')->with('success', 'تم إنشاء المستخدم بنجاح');
@@ -213,9 +216,16 @@ class AdminDashboardController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $user->id,
             'role' => 'required|in:admin,teacher,user',
+            'membership' => 'sometimes|in:free,premium,pro',
         ]);
 
-        $user->update($request->only(['name', 'email', 'role']));
+        $updateData = $request->only(['name', 'email', 'role']);
+        
+        if ($request->has('membership')) {
+            $updateData['subscription_type'] = $request->membership;
+        }
+
+        $user->update($updateData);
 
         if ($request->password) {
             $user->update(['password' => bcrypt($request->password)]);
