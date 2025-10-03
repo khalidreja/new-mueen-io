@@ -252,6 +252,23 @@ import { ref, computed, watch } from 'vue'
 import { router } from '@inertiajs/vue3'
 import AdminDashboardLayout from '@/layouts/AdminDashboardLayout.vue'
 
+// Helper function for route generation
+const getUrl = (routeName, id = null) => {
+    const baseUrl = '/admin/users'
+    switch(routeName) {
+        case 'admin.users.store':
+            return baseUrl
+        case 'admin.users.update':
+            return `${baseUrl}/${id}`
+        case 'admin.users.destroy':
+            return `${baseUrl}/${id}`
+        case 'admin.users.toggle-status':
+            return `${baseUrl}/${id}/status`
+        default:
+            return baseUrl
+    }
+}
+
 // Props
 const props = defineProps({
     users: {
@@ -294,14 +311,14 @@ const lastPage = computed(() => props.users.last_page || 1)
 // Methods
 // Watch for filter changes and update URL
 watch(filters, (newFilters) => {
-    router.get(route('admin.users'), newFilters, {
+    router.get('/admin/users', newFilters, {
         preserveState: true,
         replace: true
     })
 }, { deep: true, debounce: 300 })
 
 const resetFilters = () => {
-    router.get(route('admin.users'), {}, {
+    router.get('/admin/users', {}, {
         preserveState: true,
         replace: true
     })
@@ -334,18 +351,28 @@ const closeModal = () => {
 }
 
 const saveUser = () => {
+    console.log('Saving user:', userForm.value, 'isEditing:', isEditing.value)
+    
     if (isEditing.value) {
         // Update existing user
-        router.put(route('admin.users.update', userForm.value.id), userForm.value, {
+        router.put(getUrl('admin.users.update', userForm.value.id), userForm.value, {
             onSuccess: () => {
+                console.log('User updated successfully')
                 closeModal()
+            },
+            onError: (errors) => {
+                console.error('Error updating user:', errors)
             }
         })
     } else {
         // Create new user
-        router.post(route('admin.users.store'), userForm.value, {
+        router.post(getUrl('admin.users.store'), userForm.value, {
             onSuccess: () => {
+                console.log('User created successfully')
                 closeModal()
+            },
+            onError: (errors) => {
+                console.error('Error creating user:', errors)
             }
         })
     }
@@ -353,16 +380,30 @@ const saveUser = () => {
 
 const toggleUserStatus = (user) => {
     if (confirm(`هل أنت متأكد من ${user.status === 'suspended' ? 'إلغاء حظر' : 'حظر'} هذا المستخدم؟`)) {
-        router.patch(route('admin.users.toggle-status', user.id), {}, {
-            preserveScroll: true
+        console.log('Toggling user status for:', user.id)
+        router.patch(getUrl('admin.users.toggle-status', user.id), {}, {
+            preserveScroll: true,
+            onSuccess: () => {
+                console.log('User status toggled successfully')
+            },
+            onError: (errors) => {
+                console.error('Error toggling user status:', errors)
+            }
         })
     }
 }
 
 const deleteUser = (user) => {
     if (confirm('هل أنت متأكد من حذف هذا المستخدم؟ لا يمكن التراجع عن هذا الإجراء.')) {
-        router.delete(route('admin.users.destroy', user.id), {
-            preserveScroll: true
+        console.log('Deleting user:', user.id)
+        router.delete(getUrl('admin.users.destroy', user.id), {
+            preserveScroll: true,
+            onSuccess: () => {
+                console.log('User deleted successfully')
+            },
+            onError: (errors) => {
+                console.error('Error deleting user:', errors)
+            }
         })
     }
 }
