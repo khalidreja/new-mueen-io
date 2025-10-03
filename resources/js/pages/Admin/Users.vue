@@ -154,22 +154,22 @@
                 </div>
 
                 <!-- Pagination -->
-                <div class="mt-6 flex items-center justify-between">
+                <div v-if="users.data && users.data.length > 0" class="mt-6 flex items-center justify-between">
                     <div class="text-sm text-gray-700 dark:text-gray-300">
-                        عرض {{ (currentPage - 1) * perPage + 1 }} إلى {{ Math.min(currentPage * perPage, totalUsers) }} من {{ totalUsers }} نتيجة
+                        عرض {{ users.from || 0 }} إلى {{ users.to || 0 }} من {{ totalUsers }} نتيجة
                     </div>
                     <div class="flex space-x-2 space-x-reverse">
-                        <button @click="currentPage--" 
-                                :disabled="currentPage === 1"
-                                class="px-3 py-1 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 disabled:opacity-50">
+                        <a v-if="users.prev_page_url" 
+                           :href="users.prev_page_url"
+                           class="px-3 py-1 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600">
                             السابق
-                        </button>
-                        <span class="px-3 py-1 bg-blue-600 text-white rounded-md">{{ currentPage }}</span>
-                        <button @click="currentPage++" 
-                                :disabled="currentPage * perPage >= totalUsers"
-                                class="px-3 py-1 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 disabled:opacity-50">
+                        </a>
+                        <span class="px-3 py-1 bg-blue-600 text-white rounded-md">{{ currentPage }} من {{ lastPage }}</span>
+                        <a v-if="users.next_page_url" 
+                           :href="users.next_page_url"
+                           class="px-3 py-1 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600">
                             التالي
-                        </button>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -248,26 +248,29 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
+import { router } from '@inertiajs/vue3'
 import AdminDashboardLayout from '@/layouts/AdminDashboardLayout.vue'
 
 // Props
 const props = defineProps({
     users: {
-        type: Array,
-        default: () => []
+        type: Object,
+        required: true
+    },
+    filters: {
+        type: Object,
+        default: () => ({})
     }
 })
 
 // Reactive data
 const filters = ref({
-    search: '',
-    role: '',
-    status: ''
+    search: props.filters?.search || '',
+    role: props.filters?.role || '',
+    status: props.filters?.status || ''
 })
 
-const currentPage = ref(1)
-const perPage = ref(10)
 const showModal = ref(false)
 const isEditing = ref(false)
 const userForm = ref({
@@ -279,80 +282,29 @@ const userForm = ref({
     membership: 'free'
 })
 
-// Mock data for demonstration
-const users = ref([
-    {
-        id: 1,
-        name: 'أحمد محمد علي',
-        email: 'ahmed@example.com',
-        role: 'teacher',
-        membership: 'premium',
-        status: 'active',
-        created_at: '2024-01-15T10:30:00Z'
-    },
-    {
-        id: 2,
-        name: 'فاطمة سالم',
-        email: 'fatima@example.com',
-        role: 'user',
-        membership: 'free',
-        status: 'active',
-        created_at: '2024-02-20T14:15:00Z'
-    },
-    {
-        id: 3,
-        name: 'محمد الأحمد',
-        email: 'mohammed@example.com',
-        role: 'admin',
-        membership: 'pro',
-        status: 'active',
-        created_at: '2024-01-10T09:00:00Z'
-    },
-    {
-        id: 4,
-        name: 'نور الهدى',
-        email: 'nour@example.com',
-        role: 'user',
-        membership: 'premium',
-        status: 'suspended',
-        created_at: '2024-03-05T16:45:00Z'
-    }
-])
-
 // Computed
 const filteredUsers = computed(() => {
-    let filtered = users.value
-
-    if (filters.value.search) {
-        filtered = filtered.filter(user => 
-            user.name.toLowerCase().includes(filters.value.search.toLowerCase()) ||
-            user.email.toLowerCase().includes(filters.value.search.toLowerCase())
-        )
-    }
-
-    if (filters.value.role) {
-        filtered = filtered.filter(user => user.role === filters.value.role)
-    }
-
-    if (filters.value.status) {
-        filtered = filtered.filter(user => user.status === filters.value.status)
-    }
-
-    const start = (currentPage.value - 1) * perPage.value
-    const end = start + perPage.value
-    return filtered.slice(start, end)
+    return props.users.data || []
 })
 
-const totalUsers = computed(() => users.value.length)
+const totalUsers = computed(() => props.users.total || 0)
+const currentPage = computed(() => props.users.current_page || 1)
+const lastPage = computed(() => props.users.last_page || 1)
 
 // Methods
+// Watch for filter changes and update URL
+watch(filters, (newFilters) => {
+    router.get(route('admin.users'), newFilters, {
+        preserveState: true,
+        replace: true
+    })
+}, { deep: true, debounce: 300 })
+
 const resetFilters = () => {
-    filters.value = {
-        search: '',
-        role: '',
-        status: ''
-    }
-    currentPage.value = 1
+    router.get(route('admin.users'), {}, {
+        preserveState: true,
+        replace: true
+    })
 }
 
 const openCreateModal = () => {

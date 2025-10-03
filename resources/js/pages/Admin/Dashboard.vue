@@ -244,29 +244,15 @@
 import AdminDashboardLayout from '@/layouts/AdminDashboardLayout.vue'
 import { Link } from '@inertiajs/vue3'
 
-// Props from controller
+// Props from controller - البيانات الحقيقية فقط
 defineProps({
     stats: {
         type: Object,
-        default: () => ({
-            totalUsers: 1250,
-            newUsersThisMonth: 45,
-            activeTeachers: 320,
-            teacherGrowthRate: 12,
-            generatedContent: 5680,
-            contentThisWeek: 125,
-            paidMemberships: 89,
-            monthlyRevenue: 2340
-        })
+        required: true
     },
     recentUsers: {
         type: Array,
-        default: () => [
-            { id: 1, name: 'أحمد محمد', email: 'ahmed@example.com', joinedAt: 'منذ يوم' },
-            { id: 2, name: 'فاطمة علي', email: 'fatima@example.com', joinedAt: 'منذ يومين' },
-            { id: 3, name: 'محمد سالم', email: 'salem@example.com', joinedAt: 'منذ 3 أيام' },
-            { id: 4, name: 'نور الهدى', email: 'nour@example.com', joinedAt: 'منذ 4 أيام' },
-        ]
+        required: true
     }
 })
 </script>

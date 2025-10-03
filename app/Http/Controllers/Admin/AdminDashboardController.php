@@ -188,10 +188,72 @@ class AdminDashboardController extends Controller
         return round((($currentMonth - $lastMonth) / $lastMonth) * 100);
     }
 
+    public function storeUser(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|min:8',
+            'role' => 'required|in:admin,teacher,user',
+        ]);
+
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+            'role' => $request->role,
+        ]);
+
+        return redirect()->route('admin.users')->with('success', 'تم إنشاء المستخدم بنجاح');
+    }
+
+    public function updateUser(Request $request, User $user)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'role' => 'required|in:admin,teacher,user',
+        ]);
+
+        $user->update($request->only(['name', 'email', 'role']));
+
+        if ($request->password) {
+            $user->update(['password' => bcrypt($request->password)]);
+        }
+
+        return redirect()->route('admin.users')->with('success', 'تم تحديث المستخدم بنجاح');
+    }
+
+    public function destroyUser(User $user)
+    {
+        if ($user->id === auth()->id()) {
+            return redirect()->route('admin.users')->with('error', 'لا يمكنك حذف حسابك الخاص');
+        }
+
+        $user->delete();
+        return redirect()->route('admin.users')->with('success', 'تم حذف المستخدم بنجاح');
+    }
+
+    public function toggleUserStatus(User $user)
+    {
+        $user->update([
+            'status' => $user->status === 'active' ? 'suspended' : 'active'
+        ]);
+
+        return redirect()->route('admin.users')->with('success', 'تم تحديث حالة المستخدم بنجاح');
+    }
+
     private function calculateMonthlyRevenue()
     {
-        // This would be calculated based on actual subscription payments
-        // For now, returning a mock value
-        return 2340;
+        // Calculate based on paid subscriptions
+        $paidUsers = User::where('subscription_type', '!=', 'free')
+                        ->whereMonth('subscription_updated_at', now()->month)
+                        ->count();
+        
+        // Simple calculation: premium = $10, pro = $20 per month
+        $premiumUsers = User::where('subscription_type', 'premium')->count();
+        $proUsers = User::where('subscription_type', 'pro')->count();
+        
+        return ($premiumUsers * 10) + ($proUsers * 20);
     }
 }

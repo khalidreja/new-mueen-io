@@ -153,3 +153,4 @@ Route::middleware(['auth', 'verified'])->group(function () {
 // require __DIR__.'/settings.php'; // معطل مؤقتاً لتجنب تضارب المسارات
 require __DIR__.'/auth.php'; // مطلوب للـ controllers
 require __DIR__.'/ai-tools.php'; // AI Tools routes
+require __DIR__.'/admin.php'; // Admin routes
