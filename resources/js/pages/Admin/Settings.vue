@@ -77,8 +77,18 @@
 
                         <div class="flex justify-end">
                             <button type="submit" 
-                                    class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md font-medium">
-                                حفظ الإعدادات
+                                    :disabled="loadingGeneral"
+                                    :class="[
+                                        'px-6 py-2 rounded-md font-medium transition-colors',
+                                        loadingGeneral 
+                                            ? 'bg-gray-400 cursor-not-allowed' 
+                                            : 'bg-blue-600 hover:bg-blue-700 text-white'
+                                    ]">
+                                <span v-if="loadingGeneral" class="flex items-center space-x-2 space-x-reverse">
+                                    <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                                    <span>جاري الحفظ...</span>
+                                </span>
+                                <span v-else>حفظ الإعدادات</span>
                             </button>
                         </div>
                     </form>
@@ -139,8 +149,18 @@
 
                         <div class="flex justify-end">
                             <button @click="saveAISettings" 
-                                    class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-md font-medium">
-                                حفظ إعدادات الذكاء الاصطناعي
+                                    :disabled="loadingAI"
+                                    :class="[
+                                        'px-6 py-2 rounded-md font-medium transition-colors',
+                                        loadingAI 
+                                            ? 'bg-gray-400 cursor-not-allowed' 
+                                            : 'bg-green-600 hover:bg-green-700 text-white'
+                                    ]">
+                                <span v-if="loadingAI" class="flex items-center space-x-2 space-x-reverse">
+                                    <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                                    <span>جاري الحفظ...</span>
+                                </span>
+                                <span v-else>حفظ إعدادات الذكاء الاصطناعي</span>
                             </button>
                         </div>
                     </div>
@@ -207,8 +227,18 @@
 
                         <div class="flex justify-end">
                             <button @click="saveSecuritySettings" 
-                                    class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-md font-medium">
-                                حفظ إعدادات الأمان
+                                    :disabled="loadingSecurity"
+                                    :class="[
+                                        'px-6 py-2 rounded-md font-medium transition-colors',
+                                        loadingSecurity 
+                                            ? 'bg-gray-400 cursor-not-allowed' 
+                                            : 'bg-red-600 hover:bg-red-700 text-white'
+                                    ]">
+                                <span v-if="loadingSecurity" class="flex items-center space-x-2 space-x-reverse">
+                                    <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                                    <span>جاري الحفظ...</span>
+                                </span>
+                                <span v-else>حفظ إعدادات الأمان</span>
                             </button>
                         </div>
                     </div>
@@ -218,7 +248,23 @@
             <!-- System Info -->
             <div class="bg-white dark:bg-gray-800 shadow rounded-lg">
                 <div class="px-4 py-5 sm:p-6">
-                    <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">معلومات النظام</h3>
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">معلومات النظام</h3>
+                        <button @click="refreshSystemInfo"
+                                :disabled="refreshingSystemInfo"
+                                :class="[
+                                    'px-3 py-1 text-sm rounded-md transition-colors',
+                                    refreshingSystemInfo 
+                                        ? 'bg-gray-400 cursor-not-allowed' 
+                                        : 'bg-blue-600 hover:bg-blue-700 text-white'
+                                ]">
+                            <span v-if="refreshingSystemInfo" class="flex items-center space-x-1 space-x-reverse">
+                                <div class="animate-spin rounded-full h-3 w-3 border-b-2 border-white"></div>
+                                <span>تحديث...</span>
+                            </span>
+                            <span v-else>تحديث</span>
+                        </button>
+                    </div>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="space-y-3">
@@ -232,22 +278,62 @@
                             </div>
                             <div class="flex justify-between">
                                 <span class="text-sm text-gray-600 dark:text-gray-400">قاعدة البيانات:</span>
-                                <span class="text-sm font-medium text-gray-900 dark:text-gray-100">{{ systemInfo.database_type }}</span>
+                                <span class="text-sm font-medium text-gray-900 dark:text-gray-100">{{ systemInfo.database_info?.formatted || 'غير متاح' }}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-sm text-gray-600 dark:text-gray-400">البيئة:</span>
+                                <span :class="[
+                                    'text-sm font-medium px-2 py-1 rounded-full',
+                                    systemInfo.environment === 'production' 
+                                        ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+                                        : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
+                                ]">
+                                    {{ systemInfo.environment === 'production' ? 'إنتاج' : 'تطوير' }}
+                                </span>
                             </div>
                         </div>
                         
                         <div class="space-y-3">
                             <div class="flex justify-between">
-                                <span class="text-sm text-gray-600 dark:text-gray-400">مساحة القرص المستخدمة:</span>
-                                <span class="text-sm font-medium text-gray-900 dark:text-gray-100">{{ systemInfo.disk_usage }}</span>
+                                <span class="text-sm text-gray-600 dark:text-gray-400">مساحة القرص:</span>
+                                <div class="text-left">
+                                    <div class="text-sm font-medium text-gray-900 dark:text-gray-100">{{ systemInfo.disk_usage?.formatted || 'غير متاح' }}</div>
+                                    <div v-if="systemInfo.disk_usage?.percentage" class="w-20 bg-gray-200 rounded-full h-2 mt-1">
+                                        <div class="bg-blue-600 h-2 rounded-full" :style="`width: ${systemInfo.disk_usage.percentage}%`"></div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="flex justify-between">
                                 <span class="text-sm text-gray-600 dark:text-gray-400">ذاكرة الوصول العشوائي:</span>
-                                <span class="text-sm font-medium text-gray-900 dark:text-gray-100">{{ systemInfo.memory_usage }}</span>
+                                <div class="text-left">
+                                    <div class="text-sm font-medium text-gray-900 dark:text-gray-100">{{ systemInfo.memory_usage?.formatted || 'غير متاح' }}</div>
+                                    <div v-if="systemInfo.memory_usage?.percentage" class="w-20 bg-gray-200 rounded-full h-2 mt-1">
+                                        <div class="bg-green-600 h-2 rounded-full" :style="`width: ${systemInfo.memory_usage.percentage}%`"></div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="flex justify-between">
                                 <span class="text-sm text-gray-600 dark:text-gray-400">وقت التشغيل:</span>
                                 <span class="text-sm font-medium text-gray-900 dark:text-gray-100">{{ systemInfo.uptime }}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-sm text-gray-600 dark:text-gray-400">المنطقة الزمنية:</span>
+                                <span class="text-sm font-medium text-gray-900 dark:text-gray-100">{{ systemInfo.timezone }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Server Info -->
+                    <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+                        <h4 class="text-md font-medium text-gray-900 dark:text-gray-100 mb-3">معلومات الخادم</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600 dark:text-gray-400">نظام التشغيل:</span>
+                                <span class="font-medium text-gray-900 dark:text-gray-100">{{ systemInfo.server_info?.os || 'غير متاح' }}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600 dark:text-gray-400">خادم الويب:</span>
+                                <span class="font-medium text-gray-900 dark:text-gray-100">{{ systemInfo.server_info?.server_software || 'غير متاح' }}</span>
                             </div>
                         </div>
                     </div>
@@ -259,49 +345,41 @@
 
 <script setup>
 import { ref, computed } from 'vue'
+import { router } from '@inertiajs/vue3'
 import AdminDashboardLayout from '@/layouts/AdminDashboardLayout.vue'
 
 // Props
-defineProps({
-    initialSettings: {
+const props = defineProps({
+    systemInfo: {
         type: Object,
-        default: () => ({})
+        required: true
+    },
+    currentSettings: {
+        type: Object,
+        required: true
+    },
+    aiSettings: {
+        type: Object,
+        required: true
+    },
+    securitySettings: {
+        type: Object,
+        required: true
     }
 })
 
 // Reactive data
-const settings = ref({
-    site_name: 'منصة مُعين التعليمية',
-    site_description: 'منصة تعليمية ذكية لإنشاء المحتوى التعليمي',
-    max_free_generations: 10,
-    registration_enabled: true,
-    email_verification_required: false,
-    maintenance_mode: false,
-})
+const settings = ref({ ...props.currentSettings })
+const aiSettings = ref({ ...props.aiSettings })
+const securitySettings = ref({ ...props.securitySettings })
 
-const aiSettings = ref({
-    provider: 'gemini',
-    model: 'gemini-pro',
-    api_key: '',
-    rate_limit: 100
-})
+// Loading states
+const loadingGeneral = ref(false)
+const loadingAI = ref(false)
+const loadingSecurity = ref(false)
+const refreshingSystemInfo = ref(false)
 
-const securitySettings = ref({
-    min_password_length: 8,
-    session_timeout: 120,
-    require_password_complexity: true,
-    enable_two_factor: false,
-    log_user_activities: true
-})
-
-const systemInfo = ref({
-    laravel_version: '11.x',
-    php_version: '8.2',
-    database_type: 'MySQL 8.0',
-    disk_usage: '2.3 GB / 10 GB',
-    memory_usage: '512 MB / 2 GB',
-    uptime: '15 يوم'
-})
+const systemInfo = ref({ ...props.systemInfo })
 
 // Computed
 const availableModels = computed(() => {
@@ -324,20 +402,63 @@ const availableModels = computed(() => {
 
 // Methods
 const saveSettings = () => {
-    // Save general settings
-    console.log('Saving settings:', settings.value)
-    // API call would go here
+    loadingGeneral.value = true
+    router.put('/admin/settings', {
+        type: 'general',
+        ...settings.value
+    }, {
+        onSuccess: () => {
+            loadingGeneral.value = false
+        },
+        onError: (errors) => {
+            loadingGeneral.value = false
+            console.error('Error saving general settings:', errors)
+        }
+    })
 }
 
 const saveAISettings = () => {
-    // Save AI settings
-    console.log('Saving AI settings:', aiSettings.value)
-    // API call would go here
+    loadingAI.value = true
+    router.put('/admin/settings', {
+        type: 'ai',
+        ...aiSettings.value
+    }, {
+        onSuccess: () => {
+            loadingAI.value = false
+        },
+        onError: (errors) => {
+            loadingAI.value = false
+            console.error('Error saving AI settings:', errors)
+        }
+    })
 }
 
 const saveSecuritySettings = () => {
-    // Save security settings
-    console.log('Saving security settings:', securitySettings.value)
-    // API call would go here
+    loadingSecurity.value = true
+    router.put('/admin/settings', {
+        type: 'security',
+        ...securitySettings.value
+    }, {
+        onSuccess: () => {
+            loadingSecurity.value = false
+        },
+        onError: (errors) => {
+            loadingSecurity.value = false
+            console.error('Error saving security settings:', errors)
+        }
+    })
+}
+
+const refreshSystemInfo = () => {
+    refreshingSystemInfo.value = true
+    router.get('/admin/settings', {}, {
+        preserveState: false,
+        onSuccess: () => {
+            refreshingSystemInfo.value = false
+        },
+        onError: () => {
+            refreshingSystemInfo.value = false
+        }
+    })
 }
 </script>

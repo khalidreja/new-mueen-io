@@ -180,3 +180,24 @@
 [03-Oct-2025 07:49:22 UTC] PHP Warning:  PHP Startup: session.gc_divisor must be greater than 0 in Unknown on line 0
 [03-Oct-2025 07:49:26 UTC] PHP Warning:  PHP Startup: session.gc_divisor must be greater than 0 in Unknown on line 0
 [03-Oct-2025 07:49:31 UTC] PHP Warning:  PHP Startup: session.gc_divisor must be greater than 0 in Unknown on line 0
+[03-Oct-2025 07:55:34 UTC] PHP Warning:  PHP Startup: session.gc_divisor must be greater than 0 in Unknown on line 0
+[03-Oct-2025 07:57:16 UTC] PHP Warning:  PHP Startup: session.gc_divisor must be greater than 0 in Unknown on line 0
+[03-Oct-2025 07:58:38 UTC] PHP Warning:  PHP Startup: session.gc_divisor must be greater than 0 in Unknown on line 0
+[03-Oct-2025 07:59:01 UTC] PHP Warning:  PHP Startup: session.gc_divisor must be greater than 0 in Unknown on line 0
+[03-Oct-2025 07:59:02 UTC] PHP Fatal error:  Cannot redeclare App\Http\Controllers\Admin\AdminDashboardController::settings() in /home/mueen/ew-mueen-io/app/Http/Controllers/Admin/AdminDashboardController.php on line 279
+[03-Oct-2025 08:00:14 UTC] PHP Warning:  PHP Startup: session.gc_divisor must be greater than 0 in Unknown on line 0
+[03-Oct-2025 08:00:14 UTC] PHP Fatal error:  Cannot redeclare App\Http\Controllers\Admin\AdminDashboardController::settings() in /home/mueen/ew-mueen-io/app/Http/Controllers/Admin/AdminDashboardController.php on line 279
+[03-Oct-2025 08:00:21 UTC] PHP Warning:  PHP Startup: session.gc_divisor must be greater than 0 in Unknown on line 0
+[03-Oct-2025 08:00:21 UTC] PHP Fatal error:  Cannot redeclare App\Http\Controllers\Admin\AdminDashboardController::settings() in /home/mueen/ew-mueen-io/app/Http/Controllers/Admin/AdminDashboardController.php on line 279
+[03-Oct-2025 08:01:01 UTC] PHP Warning:  PHP Startup: session.gc_divisor must be greater than 0 in Unknown on line 0
+[03-Oct-2025 08:02:03 UTC] PHP Warning:  PHP Startup: session.gc_divisor must be greater than 0 in Unknown on line 0
+[03-Oct-2025 08:02:05 UTC] PHP Warning:  PHP Startup: session.gc_divisor must be greater than 0 in Unknown on line 0
+[03-Oct-2025 08:02:13 UTC] PHP Warning:  PHP Startup: session.gc_divisor must be greater than 0 in Unknown on line 0
+[03-Oct-2025 08:02:13 UTC] PHP Fatal error:  Cannot redeclare App\Http\Controllers\Admin\AdminDashboardController::settings() in /home/mueen/ew-mueen-io/app/Http/Controllers/Admin/AdminDashboardController.php on line 279
+[03-Oct-2025 08:02:20 UTC] PHP Warning:  PHP Startup: session.gc_divisor must be greater than 0 in Unknown on line 0
+[03-Oct-2025 08:02:21 UTC] PHP Fatal error:  Cannot redeclare App\Http\Controllers\Admin\AdminDashboardController::settings() in /home/mueen/ew-mueen-io/app/Http/Controllers/Admin/AdminDashboardController.php on line 279
+[03-Oct-2025 08:02:21 UTC] PHP Warning:  PHP Startup: session.gc_divisor must be greater than 0 in Unknown on line 0
+[03-Oct-2025 08:02:21 UTC] PHP Fatal error:  Cannot redeclare App\Http\Controllers\Admin\AdminDashboardController::settings() in /home/mueen/ew-mueen-io/app/Http/Controllers/Admin/AdminDashboardController.php on line 279
+[03-Oct-2025 08:03:08 UTC] PHP Warning:  PHP Startup: session.gc_divisor must be greater than 0 in Unknown on line 0
+[03-Oct-2025 08:03:16 UTC] PHP Warning:  PHP Startup: session.gc_divisor must be greater than 0 in Unknown on line 0
+[03-Oct-2025 08:04:30 UTC] PHP Warning:  PHP Startup: session.gc_divisor must be greater than 0 in Unknown on line 0

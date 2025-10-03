@@ -153,16 +153,39 @@ class AdminDashboardController extends Controller
 
     public function settings()
     {
-        $settings = [
-            'site_name' => config('app.name'),
-            'site_description' => 'منصة مُعين التعليمية',
-            'max_free_generations' => 10,
-            'maintenance_mode' => false,
-            'registration_enabled' => true,
+        $systemInfoService = new \App\Services\SystemInfoService();
+        $systemInfo = $systemInfoService->getSystemInfo();
+        
+        // Get current settings from database
+        $currentSettings = [
+            'site_name' => \App\Models\Setting::get('site_name', 'منصة مُعين التعليمية'),
+            'site_description' => \App\Models\Setting::get('site_description', 'منصة تعليمية ذكية لإنشاء المحتوى التعليمي'),
+            'max_free_generations' => \App\Models\Setting::get('max_free_generations', 10),
+            'registration_enabled' => \App\Models\Setting::get('registration_enabled', true),
+            'email_verification_required' => \App\Models\Setting::get('email_verification_required', false),
+            'maintenance_mode' => \App\Models\Setting::get('maintenance_mode', false),
+        ];
+
+        $aiSettings = [
+            'provider' => \App\Models\Setting::get('ai_provider', 'gemini'),
+            'model' => \App\Models\Setting::get('ai_model', 'gemini-pro'),
+            'api_key' => \App\Models\Setting::get('ai_api_key', ''),
+            'rate_limit' => \App\Models\Setting::get('ai_rate_limit', 100),
+        ];
+
+        $securitySettings = [
+            'min_password_length' => \App\Models\Setting::get('min_password_length', 8),
+            'session_timeout' => \App\Models\Setting::get('session_timeout', 120),
+            'require_password_complexity' => \App\Models\Setting::get('require_password_complexity', true),
+            'enable_two_factor' => \App\Models\Setting::get('enable_two_factor', false),
+            'log_user_activities' => \App\Models\Setting::get('log_user_activities', true),
         ];
 
         return Inertia::render('Admin/Settings', [
-            'settings' => $settings,
+            'systemInfo' => $systemInfo,
+            'currentSettings' => $currentSettings,
+            'aiSettings' => $aiSettings,
+            'securitySettings' => $securitySettings,
         ]);
     }
 
@@ -251,6 +274,85 @@ class AdminDashboardController extends Controller
         ]);
 
         return redirect()->route('admin.users')->with('success', 'تم تحديث حالة المستخدم بنجاح');
+    }
+
+    public function updateSettings(Request $request)
+    {
+        $request->validate([
+            'type' => 'required|in:general,ai,security',
+        ]);
+
+        switch ($request->type) {
+            case 'general':
+                $this->updateGeneralSettings($request);
+                break;
+            case 'ai':
+                $this->updateAISettings($request);
+                break;
+            case 'security':
+                $this->updateSecuritySettings($request);
+                break;
+        }
+
+        return redirect()->route('admin.settings')->with('success', 'تم حفظ الإعدادات بنجاح');
+    }
+
+    private function updateGeneralSettings(Request $request)
+    {
+        $request->validate([
+            'site_name' => 'required|string|max:255',
+            'site_description' => 'required|string|max:500',
+            'max_free_generations' => 'required|integer|min:1|max:100',
+            'registration_enabled' => 'boolean',
+            'email_verification_required' => 'boolean',
+            'maintenance_mode' => 'boolean',
+        ]);
+
+        \App\Models\Setting::set('site_name', $request->site_name, 'string', 'اسم الموقع');
+        \App\Models\Setting::set('site_description', $request->site_description, 'string', 'وصف الموقع');
+        \App\Models\Setting::set('max_free_generations', $request->max_free_generations, 'integer', 'الحد الأقصى للمحتوى المجاني');
+        \App\Models\Setting::set('registration_enabled', $request->boolean('registration_enabled'), 'boolean', 'السماح بالتسجيل الجديد');
+        \App\Models\Setting::set('email_verification_required', $request->boolean('email_verification_required'), 'boolean', 'يتطلب تأكيد البريد الإلكتروني');
+        \App\Models\Setting::set('maintenance_mode', $request->boolean('maintenance_mode'), 'boolean', 'وضع الصيانة');
+
+        // Handle maintenance mode
+        if ($request->boolean('maintenance_mode')) {
+            \Artisan::call('down');
+        } else {
+            \Artisan::call('up');
+        }
+    }
+
+    private function updateAISettings(Request $request)
+    {
+        $request->validate([
+            'provider' => 'required|in:gemini,openai,claude',
+            'model' => 'required|string',
+            'api_key' => 'required|string',
+            'rate_limit' => 'required|integer|min:1|max:1000',
+        ]);
+
+        \App\Models\Setting::set('ai_provider', $request->provider, 'string', 'مزود الذكاء الاصطناعي');
+        \App\Models\Setting::set('ai_model', $request->model, 'string', 'النموذج المستخدم');
+        \App\Models\Setting::set('ai_api_key', $request->api_key, 'string', 'مفتاح API');
+        \App\Models\Setting::set('ai_rate_limit', $request->rate_limit, 'integer', 'الحد الأقصى للطلبات/ساعة');
+    }
+
+    private function updateSecuritySettings(Request $request)
+    {
+        $request->validate([
+            'min_password_length' => 'required|integer|min:6|max:50',
+            'session_timeout' => 'required|integer|min:15|max:1440',
+            'require_password_complexity' => 'boolean',
+            'enable_two_factor' => 'boolean',
+            'log_user_activities' => 'boolean',
+        ]);
+
+        \App\Models\Setting::set('min_password_length', $request->min_password_length, 'integer', 'طول كلمة المرور الأدنى');
+        \App\Models\Setting::set('session_timeout', $request->session_timeout, 'integer', 'مدة انقضاء الجلسة (دقيقة)');
+        \App\Models\Setting::set('require_password_complexity', $request->boolean('require_password_complexity'), 'boolean', 'يتطلب كلمة مرور معقدة');
+        \App\Models\Setting::set('enable_two_factor', $request->boolean('enable_two_factor'), 'boolean', 'تفعيل المصادقة الثنائية');
+        \App\Models\Setting::set('log_user_activities', $request->boolean('log_user_activities'), 'boolean', 'تسجيل أنشطة المستخدمين');
     }
 
     private function calculateMonthlyRevenue()
